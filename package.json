@@ -1,0 +1,20 @@
+{
+  "name": "genelitic",
+  "description": "Sequal to Channelwood",
+  "license": "MIT",
+  "scripts": {
+    "develop": "gatsby develop",
+    "build": "gatsby build",
+    "serve": "gatsby serve"
+  },
+  "dependencies": {
+    "gatsby": "next",
+    "gatsby-link": "next",
+    "gatsby-source-filesystem": "next",
+    "gatsby-transformer-remark": "^2.1.1-rc.5",
+    "react": "^16.4.2",
+    "react-dom": "^16.4.2",
+    "react-draggable": "^3.0.5",
+    "styled-components": "^3.4.5"
+  }
+}
