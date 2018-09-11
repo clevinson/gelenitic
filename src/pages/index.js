@@ -1,17 +1,16 @@
 import React from "react"
-import Link from "gatsby-link"
-import Slink from "../components/slink"
+import {Slink} from "../components/link"
 import { graphql } from "gatsby"
 import Layout from "../components/layout"
 import styled from "styled-components"
-import {Small} from "../global-variables"
+import {Small, Medium} from "../global-variables"
 
 const ReleaseList = styled.ul`
   padding: 0;
   width: 800px;
   margin: 0 auto;
 
-  @media only screen and (max-width: 800px) {
+  @media only screen and ${Medium} {
     width: 600px;
   }
 
@@ -29,6 +28,13 @@ const ReleaseList = styled.ul`
     text-align: right;
   }
 
+  @media only screen and ${Small} {
+    li {
+      flex-direction: column !important;
+      padding-top: 0;
+    }
+  }
+
 `
 
 const Release = styled.li`
@@ -41,10 +47,6 @@ const Release = styled.li`
 
   line-height: 1.5em;
 
-  @media only screen and ${Small} {
-    flex-direction: column;
-    padding-top: 0;
-  }
 `
 
 const Art = styled.div`
@@ -59,7 +61,8 @@ const Art = styled.div`
 const CoverArt = styled.img`
   width: 100%;
 `
-const HoverArt = styled(CoverArt)`
+const HoverArt = styled.img`
+  width: 100%;
   opacity: 0;
   position: absolute;
   left: 0;
@@ -87,10 +90,10 @@ const Header = styled.h2`
 
 
 let isEven = num => {
-  if (num % 2) {
-    return "right-to-left"
-  } else {
+  if (num % 2 === 0) {
     return "left-to-right"
+  } else {
+    return "right-to-left"
   }
 }
 
@@ -103,13 +106,11 @@ export default ({ data }) => {
 
       return (
       <Release key={i} className={isEven(i)}>
-        <Art className={isEven(i)}>
-          <Link to={ "/physical/" + release.cat_no }>
+        <Art>
             <CoverArt src={ release.cover_art }/>
             <HoverArt src={ release.hover_art }/>
-          </Link>
         </Art>
-        <Info className={isEven(i)}>
+        <Info>
           <Header>{ release.artist }</Header>
           <Header>{ release.title }</Header>
           <div>{ release.cat_no }</div>

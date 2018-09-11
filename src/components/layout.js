@@ -1,5 +1,5 @@
 import React from "react"
-import Slink from "slink"
+import {Slink} from "./link"
 import styled, {injectGlobal} from "styled-components"
 import {Small} from "../global-variables"
 
