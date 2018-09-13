@@ -72,7 +72,7 @@ const NavLinks = styled(Flank)`
     flex-direction: column;
     align-items: flex-end;
     justify-content: center;
-    padding-right: 3em;
+    padding-right: 15px;
   }
 
 `

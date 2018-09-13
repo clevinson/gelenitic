@@ -62,13 +62,9 @@ const ButtonContainer = styled.div`
   a:first-child {
     margin-left: 0px;
   }
-  a:last-child {
+  div:last-child {
     margin-right: 0px;
   }
-  a:hover {
-    text-decoration: none;
-  }
-
 `
 
 const SoldOutButton = styled.div`

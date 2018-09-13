@@ -6,12 +6,13 @@ import styled from "styled-components"
 import {Small, Medium} from "../global-variables"
 
 const ReleaseList = styled.ul`
-  padding: 0;
   width: 800px;
   margin: 0 auto;
+  box-sizing: border-box;
+  padding: 15px;
 
   @media only screen and ${Medium} {
-    width: 600px;
+    width: 520px;
   }
 
   @media only screen and ${Small} {
@@ -46,7 +47,6 @@ const Release = styled.li`
   align-items: center;
 
   line-height: 1.5em;
-
 `
 
 const Art = styled.div`
@@ -78,7 +78,7 @@ const Info = styled.div`
 
   @media only screen and ${Small} {
     width: 100%;
-    padding: 15px;
+    padding-top: 15px;
     box-sizing: border-box;
   }
 `

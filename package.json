@@ -8,13 +8,16 @@
     "serve": "gatsby serve"
   },
   "dependencies": {
+    "babel-plugin-styled-components": "^1.7.1",
     "gatsby": "next",
     "gatsby-link": "next",
+    "gatsby-plugin-styled-components": "^3.0.0-rc.5",
     "gatsby-source-filesystem": "next",
     "gatsby-transformer-remark": "^2.1.1-rc.5",
     "react": "^16.4.2",
     "react-dom": "^16.4.2",
     "react-draggable": "^3.0.5",
-    "styled-components": "^3.4.5"
+    "react-responsive": "^5.0.0",
+    "styled-components": "^2.4.1"
   }
 }

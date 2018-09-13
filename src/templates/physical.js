@@ -1,9 +1,10 @@
 import React from "react"
 import ReleaseTextBox from "../components/release-textbox"
 import { graphql } from "gatsby"
+import MediaQuery from 'react-responsive'
 import Layout from "../components/layout"
 import styled from "styled-components"
-import Draggable from 'react-draggable'
+import Draggable from '../components/draggable'
 import {Small} from "../global-variables"
 
 const TextBox = styled(ReleaseTextBox)`
@@ -14,7 +15,7 @@ const TextBox = styled(ReleaseTextBox)`
   cursor: move;
 
   @media only screen and ${Small} {
-    position: static !important;
+    position: static;
     width: 100%;
   }
 `
