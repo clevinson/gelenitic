@@ -1,11 +1,23 @@
 import React from "react"
 import {Link} from "./link"
 import styled from "styled-components"
+import {Small} from "../global-variables"
+import Draggable from "../components/draggable"
 
 const ReleaseTextBox = styled.div`
   padding: 11px;
   background-color: #fff;
   box-sizing: border-box;
+
+  width: 304px;
+  position: absolute;
+  left: 80px;
+  top: 40px;
+
+  @media only screen and ${Small} {
+    position: static;
+    width: 100%;
+  }
 `
 
 const LineHeader = styled.h2`
@@ -43,7 +55,7 @@ const Description = styled.div`
   word-wrap: break-word;
 `
 
-const Button = styled(Link)`
+const Button = styled.a`
   box-sizing: border-box;
   padding: 1em;
   border: 1px solid #000;
@@ -96,21 +108,23 @@ let renderPurchaseButton = function(purchase_link) {
   if (purchase_link === "sold-out") {
     return <SoldOutButton>sold out</SoldOutButton>
   } else {
-    return <Button to={purchase_link}>buy</Button>
+    return <Button href={purchase_link}>buy</Button>
   }
 }
 
 export default ({data, ...other }) => (
-  <ReleaseTextBox {...other}>
-    <LineHeader>{ data.artist }</LineHeader>
-    <LineHeader>{ data.title }</LineHeader>
-    <LineText>{ data.metadata_date }</LineText>
-    <LineText>{ data.cat_no }</LineText>
-    <Tracklist>{ renderTracklist(data.tracklist) }</Tracklist>
-    <Description dangerouslySetInnerHTML={{ __html: data.description }}/>
-    <ButtonContainer>
-      <Button to="/about/">listen</Button>
-      { renderPurchaseButton(data.purchase_link) }
-    </ButtonContainer>
-  </ReleaseTextBox>
+  <Draggable>
+    <ReleaseTextBox {...other}>
+      <LineHeader>{ data.artist }</LineHeader>
+      <LineHeader>{ data.title }</LineHeader>
+      <LineText>{ data.metadata_date }</LineText>
+      <LineText>{ data.cat_no }</LineText>
+      <Tracklist>{ renderTracklist(data.tracklist) }</Tracklist>
+      <Description dangerouslySetInnerHTML={{ __html: data.description }}/>
+      <ButtonContainer>
+        <Button target="_blank" href={"/digital/" + data.cat_no + "/"}>listen</Button>
+        { renderPurchaseButton(data.purchase_link) }
+      </ButtonContainer>
+    </ReleaseTextBox>
+  </Draggable>
 )

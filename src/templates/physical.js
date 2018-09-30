@@ -1,24 +1,9 @@
 import React from "react"
 import ReleaseTextBox from "../components/release-textbox"
 import { graphql } from "gatsby"
-import MediaQuery from 'react-responsive'
 import Layout from "../components/layout"
 import styled from "styled-components"
-import Draggable from '../components/draggable'
 import {Small} from "../global-variables"
-
-const TextBox = styled(ReleaseTextBox)`
-  width: 304px;
-  position: absolute;
-  left: 80px;
-  top: 40px;
-  cursor: move;
-
-  @media only screen and ${Small} {
-    position: static;
-    width: 100%;
-  }
-`
 
 const BackgroundImages = styled.div`
   width: 100%;
@@ -50,9 +35,7 @@ export default ({ data }) => {
   return (
   <Layout>
   <div className="container">
-    <Draggable>
-      <TextBox data={release}/>
-    </Draggable>
+    <ReleaseTextBox data={release}/>
     <BackgroundImages>
     { images.map((img_url, i) => {
       return <img alt="" key={i} src={"/img/" + img_url} />

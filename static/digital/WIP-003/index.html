@@ -1,0 +1,310 @@
+<script src="/js/lib/jquery-2.1.0.min.js"></script>
+<script src="https://www.youtube.com/iframe_api"></script>
+
+<style>
+
+/* font */
+@font-face {
+  font-family: 'Nazareth Roman';
+  src: url('/fonts/NazarethRoman-Medium.eot');
+  src: url('/fonts/NazarethRoman-Medium.eot?#iefix') format('embedded-opentype'),
+    url('/fonts/NazarethRoman-Medium.woff') format('woff'),
+    url('/fonts/NazarethRoman-Medium.ttf') format('truetype'),
+    url('/fonts/NazarethRoman-Medium.svg#NazarethRoman-Medium') format('svg');
+  font-weight: 500;
+  font-style: normal;
+}
+
+#container {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(44deg, #ffffff, #ffffff, #ffffff, #ffffff, #ffffff, #ffffff, #d1d1d1, #ffffff, #ffffff, #ffffff, #ffffff, #ffffff, #ffffff);
+  background-size: 1500% 1000%;
+  animation: backgroundFlash 40s ease infinite;
+}
+@keyframes backgroundFlash {
+  0%{background-position:10% 100%}
+  30%{background-position:10% 100%}
+  35%{background-position:91% 0%}
+  100%{background-position:91% 0%}
+}
+
+.info-container ul {
+  padding: 0;
+  margin: 0;
+}
+
+.info-container li {
+  cursor: pointer;
+  list-style-type: none;
+  font-family: 'Nazareth Roman', serif;
+  font-size: 18px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  text-align: center;
+  padding-bottom: 12px;
+}
+
+.info-container li span {
+  display: inline-block;
+  padding: 0.25em 0.25em 0
+}
+
+.info-container li.shade span {
+  background-color: #000;
+  color: #fff;
+}
+
+.info-container {
+  position: absolute;
+  top: 50%;
+  margin-top: -130px;
+  width: 33%;
+}
+
+.info-container.left {
+  left: 5%;
+}
+
+.info-container.right {
+  right: 5%;
+}
+
+.info-container.right ul li {
+    padding-bottom: 20px;
+}
+
+#player {
+  margin-left: -125px;
+}
+
+#player-holder {
+  overflow: hidden;
+}
+
+#all-holder {
+  width: 300px;
+  height: 400px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-top: -200px;
+  margin-left: -150px;
+}
+
+#player-border {
+  width: 300px;
+  height: 400px;
+  border: 2px solid #000;
+  position: absolute;
+  animation-duration: 9s;
+  animation-name: pbBounce;
+  animation-iteration-count: infinite;
+  animation-timing-function: ease-in-out;
+  animation-direction: alternate;
+}
+@keyframes pbBounce {
+  to {
+    transform: translate(0,2.75em);
+  }
+}
+
+
+#player-border-offset {
+  content: "";
+  position: absolute;
+  top: -14px;
+  bottom: 10px;
+  left: -14px;
+  right: 10px;
+  border: 2px solid #000;
+  animation-duration: 9s;
+  animation-name: pboBounce;
+  animation-iteration-count: infinite;
+  animation-timing-function: ease-in-out;
+  animation-direction: alternate;
+}
+@keyframes pboBounce {
+  to {
+    transform: translate(0,2.5em);
+  }
+}
+
+.np-indicator {
+  position: absolute;
+  left: 20px;
+  color: #666;
+  cursor: default;
+}
+
+#prevButton, #nextButton {
+  cursor: pointer;
+  width: 30px;
+  height: 26px;
+  position: absolute;
+  top: 50%;
+  margin-top: -16px;
+}
+#prevButton {
+  left: 10px;
+}
+#nextButton {
+  right: 10px;
+}
+
+</style>
+
+<div id="container">
+  <div id="all-holder">
+    <div id="player-border">
+      <div id="player-holder">
+        <div id="player"></div>
+      </div>
+    </div>
+    <div id="player-border-offset"></div>
+  </div>
+  <div class="info-container left">
+    <ul>
+      <li onclick="playTrack(0)" id="no_0"><span>|**</span></li>
+      <li onclick="playTrack(1)" id="no_1"><span>occupant</span></li>
+      <li onclick="playTrack(2)" id="no_2"><span>terrarium</span></li>
+      <li onclick="playTrack(3)" id="no_3"><span>prime meridians</span></li>
+      <li onclick="playTrack(4)" id="no_4"><span>walls doors and windows</span></li>
+      <li onclick="playTrack(5)" id="no_5"><span>gloved hand</span></li>
+      <li onclick="playTrack(6)" id="no_6"><span>reflex</span></li>
+    </ul>
+  </div>
+  <div class="info-container right">
+    <ul>
+      <li onclick="playTrack(7)"  id="no_7"><span>-1</span></li>
+      <li onclick="playTrack(8)"  id="no_8"><span>long leash</span></li>
+      <li onclick="playTrack(9)"  id="no_9"><span>syrena</span></li>
+      <li onclick="playTrack(10)" id="no_10"><span>terminal</span></li>
+      <li onclick="playTrack(11)" id="no_11"><span>one large rooms</span></li>
+      <li onclick="playTrack(12)" id="no_12"><span>***|</span></li>
+    </ul>
+  </div>
+</div>
+<div id="prevButton"><svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 20 17" style="enable-background:new 0 0 20 17;" xml:space="preserve"><style type="text/css"> .st0{fill:none;stroke:#000;stroke-miterlimit:10;}</style><g><polygon class="st0" points="12.905,1.232 12.905,15.768 1.286,8.5  "/><polygon class="st0" points="18.714,1.232 18.714,15.768 7.095,8.5  "/></g></svg></div>
+<div id="nextButton"><svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 20 17" style="enable-background:new 0 0 20 17;" xml:space="preserve"><style type="text/css">.st0{fill:none;stroke:#000;stroke-miterlimit:10;}</style><g><polygon class="st0" points="7.095,15.768 7.095,1.232 18.714,8.5   "/><polygon class="st0" points="1.286,15.768 1.286,1.232 12.905,8.5   "/></g></svg></div>
+
+<script type='text/javascript'>
+
+  $(function() {
+    drawPlayControls();
+
+    requestAnimationFrame(updatePlayerBorders);
+  });
+
+  function onPlayerStateChange(YTEvent) {
+    drawNpIndicator(player.getPlaylistIndex());
+  }
+
+  function clearNpIndicator(){
+    $('.info-container li').removeClass('shade'); 
+  }
+
+  function drawNpIndicator(idx) {
+    clearNpIndicator();
+    $('.info-container li#no_' + idx ).addClass('shade');
+  }
+
+  // 3. This function creates an <iframe> (and YouTube player)
+  //    after the API code downloads.
+  var player;
+  function onYouTubeIframeAPIReady() {
+    player = new YT.Player('player', {
+      height: '400',
+      width: '633',
+      playerVars: {
+        'controls': 0,
+        'frameborder': 0,
+        'modestbranding': 0,
+        'rel': 0,
+        'showinfo': 0,
+        'autohide': 1,
+        'listType': 'playlist',
+        'list': 'PLbfcwV846cnVtgJgyYQ6sEnxxfj3p4Qtm',
+        'autoplay': 1,
+        'loop': 1
+      },
+      events: {
+        'onStateChange': onPlayerStateChange
+      }
+    });
+  }
+
+  function drawPlayControls() {
+
+    var prevButton = $('#prevButton');
+    var nextButton = $('#nextButton');
+
+    prevButton.click(function() {
+      player.previousVideo();
+    });
+
+    nextButton.click(function() {
+      player.nextVideo();
+    });
+  }
+
+  function playTrack(index) {
+    player.playVideoAt(index)
+  }
+
+  var relativeMouseX, relativeMouseY;
+
+  function setRelativeMouseVars(event) {
+    relativeMouseX = 2*(event.pageX/$(document).width() - 0.5);
+    relativeMouseY = 2*(event.pageY/$(document).height() - 0.5);
+  }
+
+  $(document).on("mousemove", setRelativeMouseVars);
+
+  var time;
+
+  var pbXOffset, pbYOffset, pboXOffset, pboYOffset;
+
+  function updatePlayerBorders() {
+    requestAnimationFrame(updatePlayerBorders);
+
+    var now = new Date().getTime(),
+        dt = now - (time || now);
+
+    time = now;
+
+    pbXOffset = updateCoordWithMax(pbXOffset, 3*relativeMouseX, dt);
+    pbYOffset = updateCoordWithMax(pbYOffset, 3*relativeMouseY, dt);
+
+    pboXOffset = updateCoordWithMax(pboXOffset, 2*relativeMouseX, dt);
+    pboYOffset = updateCoordWithMax(pboYOffset, 3*relativeMouseY, dt);
+
+  
+    $('#player-border').css({transform: "translate(" + pbXOffset + "em," + pbYOffset + "em)"});
+    $('#all-holder').css({transform: "translate(" + pboXOffset + "em," + pboYOffset + "em)"});
+  }
+
+  function updateCoordWithMax(position, max, dt) {
+    position = (position || 0);
+    return position + (max - position)*Math.atan(dt/2000)/Math.PI;
+  }
+
+  // download code
+// 37 = left, 38 = up, 39 = right, 40 = down
+var keyCode = [];
+$(window).keydown(function(e) {
+    var key = e.which;
+    keyCode.push(key);
+    if (keyCode.length > 4) {
+      keyCode.splice(0, 1);
+    }
+    if (keyCode[0] == 38 && keyCode[1] == 39 && keyCode[2] == 40 && keyCode[3] == 37) {
+      ga('send', 'event', 'get-release', 'download:320', 'WIP-003');
+      window.location.href = 'https://s3.amazonaws.com/wip-static/releases/WIP003-LLLOYD-MYTHOFINTENTS-MP3320.zip';
+    }
+});
+
+</script>

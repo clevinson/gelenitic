@@ -1,5 +1,5 @@
 import React from "react"
-import {Slink} from "../components/link"
+import {Sa, Slink} from "../components/link"
 import { graphql } from "gatsby"
 import Layout from "../components/layout"
 import styled from "styled-components"
@@ -116,7 +116,7 @@ export default ({ data }) => {
           <div>{ release.cat_no }</div>
           <div>{ release.release_date }</div>
           <div>
-            <Slink to={ "/digital/" + release.cat_no }>listen</Slink>
+            <Sa href={ "/digital/" + release.cat_no + "/" } target="_blank">listen</Sa>
             <span> / </span>
             <Slink to={ node.fields.slug }>{ release.format }</Slink>
           </div>

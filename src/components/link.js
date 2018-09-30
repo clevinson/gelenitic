@@ -37,5 +37,18 @@ const Slink = styled(Link)`
   text-decoration: underline;
 }
 `
+const Sa = styled.a`
+:link, :visited, :active {
+  text-decoration: none;
+  text-transform: uppercase;
+  color: #000;
+  transition: all .5s linear 1ms;
+}
+:hover {
+  color: #fff;
+  transition: all 5s linear 1ms;
+  text-decoration: underline;
+}
+`
 
-export { Slink, Link }
+export { Slink, Link, Sa }
