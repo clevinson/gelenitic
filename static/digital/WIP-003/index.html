@@ -38,7 +38,6 @@
 }
 
 .info-container li {
-  cursor: pointer;
   list-style-type: none;
   font-family: 'Nazareth Roman', serif;
   font-size: 18px;
@@ -49,6 +48,7 @@
 }
 
 .info-container li span {
+  cursor: pointer;
   display: inline-block;
   padding: 0.25em 0.25em 0
 }
@@ -78,11 +78,17 @@
 }
 
 #player {
-  margin-left: -125px;
+  margin-left: -170px;
+  margin-top: -60px;
+  width: 630px;
+  height: 480px;
+  pointer-events: none;
 }
 
 #player-holder {
   overflow: hidden;
+  height: 100%;
+  cursor: pointer;
 }
 
 #all-holder {
@@ -126,6 +132,7 @@
   animation-iteration-count: infinite;
   animation-timing-function: ease-in-out;
   animation-direction: alternate;
+  pointer-events: none;
 }
 @keyframes pboBounce {
   to {
@@ -160,7 +167,7 @@
 <div id="container">
   <div id="all-holder">
     <div id="player-border">
-      <div id="player-holder">
+      <div onclick="startPlayback()" id="player-holder">
         <div id="player"></div>
       </div>
     </div>
@@ -168,23 +175,23 @@
   </div>
   <div class="info-container left">
     <ul>
-      <li onclick="playTrack(0)" id="no_0"><span>|**</span></li>
-      <li onclick="playTrack(1)" id="no_1"><span>occupant</span></li>
-      <li onclick="playTrack(2)" id="no_2"><span>terrarium</span></li>
-      <li onclick="playTrack(3)" id="no_3"><span>prime meridians</span></li>
-      <li onclick="playTrack(4)" id="no_4"><span>walls doors and windows</span></li>
-      <li onclick="playTrack(5)" id="no_5"><span>gloved hand</span></li>
-      <li onclick="playTrack(6)" id="no_6"><span>reflex</span></li>
+      <li id="no_0" ><span onclick="playTrack(0)" >|**</span></li>
+      <li id="no_1" ><span onclick="playTrack(1)" >occupant</span></li>
+      <li id="no_2" ><span onclick="playTrack(2)" >terrarium</span></li>
+      <li id="no_3" ><span onclick="playTrack(3)" >prime meridians</span></li>
+      <li id="no_4" ><span onclick="playTrack(4)" >walls doors and windows</span></li>
+      <li id="no_5" ><span onclick="playTrack(5)" >gloved hand</span></li>
+      <li id="no_6" ><span onclick="playTrack(6)" >reflex</span></li>
     </ul>
   </div>
   <div class="info-container right">
     <ul>
-      <li onclick="playTrack(7)"  id="no_7"><span>-1</span></li>
-      <li onclick="playTrack(8)"  id="no_8"><span>long leash</span></li>
-      <li onclick="playTrack(9)"  id="no_9"><span>syrena</span></li>
-      <li onclick="playTrack(10)" id="no_10"><span>terminal</span></li>
-      <li onclick="playTrack(11)" id="no_11"><span>one large rooms</span></li>
-      <li onclick="playTrack(12)" id="no_12"><span>***|</span></li>
+      <li id="no_7"  ><span onclick="playTrack(7)" >-1</span></li>
+      <li id="no_8"  ><span onclick="playTrack(8)" >long leash</span></li>
+      <li id="no_9"  ><span onclick="playTrack(9)" >syrena</span></li>
+      <li id="no_10" ><span onclick="playTrack(10)" >terminal</span></li>
+      <li id="no_11" ><span onclick="playTrack(11)" >one large rooms</span></li>
+      <li id="no_12" ><span onclick="playTrack(12)" >***|</span></li>
     </ul>
   </div>
 </div>
@@ -200,6 +207,7 @@
   });
 
   function onPlayerStateChange(YTEvent) {
+    $('#player-holder').css('cursor', 'default')
     drawNpIndicator(player.getPlaylistIndex());
   }
 
@@ -217,8 +225,8 @@
   var player;
   function onYouTubeIframeAPIReady() {
     player = new YT.Player('player', {
-      height: '400',
-      width: '633',
+      height: '450',
+      width: '353',
       playerVars: {
         'controls': 0,
         'frameborder': 0,
@@ -228,7 +236,7 @@
         'autohide': 1,
         'listType': 'playlist',
         'list': 'PLbfcwV846cnVtgJgyYQ6sEnxxfj3p4Qtm',
-        'autoplay': 1,
+        'autoplay': 0,
         'loop': 1
       },
       events: {
@@ -253,6 +261,10 @@
 
   function playTrack(index) {
     player.playVideoAt(index)
+  }
+
+  function startPlayback() {
+    player.playVideo()
   }
 
   var relativeMouseX, relativeMouseY;
@@ -282,9 +294,9 @@
     pboXOffset = updateCoordWithMax(pboXOffset, 2*relativeMouseX, dt);
     pboYOffset = updateCoordWithMax(pboYOffset, 3*relativeMouseY, dt);
 
-  
-    $('#player-border').css({transform: "translate(" + pbXOffset + "em," + pbYOffset + "em)"});
-    $('#all-holder').css({transform: "translate(" + pboXOffset + "em," + pboYOffset + "em)"});
+
+    //$('#player-border').css({transform: "translate(" + pbXOffset + "em," + pbYOffset + "em)"});
+    //$('#all-holder').css({transform: "translate(" + pboXOffset + "em," + pboYOffset + "em)"});
   }
 
   function updateCoordWithMax(position, max, dt) {
