@@ -11,7 +11,8 @@ tracklist:
     tracks:
       - 申
       - dádiva (prelude)
-      - mirror room
+      - '"mirror'
+      - room"
       - fka drudms (interlude)
       - kuro-neko
       - trails\
