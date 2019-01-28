@@ -1,0 +1,51 @@
+backend:
+  name: github
+  repo: clevinson/gelenitic
+
+publish_mode: editorial_workflow
+
+media_folder: static/assets
+public_folder: assets
+
+collections:
+  - name: release
+    label: Release
+    folder: release
+    create: true
+    fields:
+      - { name: artist, label: Artist }
+      - { name: title, label: Title }
+      - { name: cat_no, label: Cat No. }
+      - { name: release_date, label: Release Date, widget: date }
+      - { name: format, label: Format }
+      - label: "Availability"
+        name: "in_stock"
+        widget: "select"
+        options:
+          - label: In Stock
+            value: true
+          - label: Out of Stock
+            value: false
+      - { name: purchase_link, label: Purchase Link }
+      - name: tracklist
+        label: Tracklist
+        widget: list
+        fields:
+          - { name: side_name, label: Side Name }
+          - name: tracks
+            label: Tracks
+            widget: list
+      - { name: cover_art, label: Cover Art, widget: image }
+      - { name: hover_art, label: Hover Art, widget: image }
+      - name: background_images
+        label: Background Images
+        widget: list
+        field: { label: Image, name: image, widget: image }
+      - { name: description, label: Release Description, widget: markdown }
+      - name: Release Box Styling
+        label: Release Box Styling
+        widget: object
+        fields:
+          - { name: width, label: Width, default: 300, widget: number, hint: in px }
+          - { name: x, label: X Position, default: 80, widget: number, hint: in px }
+          - { name: y, label: Y Position, default: 40, widget: number, hint: in px }
