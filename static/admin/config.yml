@@ -35,6 +35,7 @@ collections:
           - name: tracks
             label: Tracks
             widget: list
+            field: { label: Track, name: title, widget: string }
       - { name: cover_art, label: Cover Art, widget: image }
       - { name: hover_art, label: Hover Art, widget: image }
       - name: background_images
