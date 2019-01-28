@@ -9,10 +9,10 @@ const ReleaseTextBox = styled.div`
   background-color: #fff;
   box-sizing: border-box;
 
-  width: 304px;
+  width: ${props => props.width};
   position: absolute;
-  left: 80px;
-  top: 40px;
+  left: ${props => props.x};
+  top: ${props => props.y};
 
   @media only screen and ${Small} {
     position: static;
@@ -34,7 +34,7 @@ const Tracklist = styled.div`
   flex-direction: row;
   ul {
     width: 100%;
-    margin: 20px 0;
+    margin: 10px 0 0 0;
     padding: 0;
     margin-right: 25px;
     list-style-type: none;
@@ -45,14 +45,23 @@ const TrackListItem = styled.li`
 `
 
 const SideName = styled.li`
-  margin-bottom: 2em;
+  margin-bottom: 1.5em;
+  font-weight: bold;
 `
 
 const Description = styled.div`
-  line-height: 1.5em
+  line-height: 1em
   font-size: 1em
   margin: 1em 0 2em 0;
   word-wrap: break-word;
+  p {
+    margin: 1em 0 ;
+  }
+
+  code {
+    font-family: 'ocr_bregular',Monaco,monospace;
+    text-transform: uppercase;
+  }
 `
 
 const Button = styled.a`
@@ -114,7 +123,7 @@ let renderPurchaseButton = function(purchase_link) {
 
 export default ({data, ...other }) => (
   <Draggable>
-    <ReleaseTextBox {...other}>
+    <ReleaseTextBox width={ data.width } x={ data.position.x } y={ data.position.y } {...other}>
       <LineHeader>{ data.artist }</LineHeader>
       <LineHeader>{ data.title }</LineHeader>
       <LineText>{ data.metadata_date }</LineText>

@@ -56,6 +56,11 @@ export const query = graphql`
         artist
         release_date
         cat_no
+        width
+        position {
+          x
+          y
+        }
         tracklist {
           a
           b
