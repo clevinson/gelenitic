@@ -14,14 +14,13 @@ tracklist:
       - mirror room
       - fka drums (interlude)
       - kuro-neko
-      - trails\
-      - echoes
+      - 'echoes, trails'
       - drip lenses
       - dádiva
       - ///'\
       - tea house (drums)
       - rodtrip
-      - ountains
+      - fountains II
 cover_art: /assets/wip004-cover-small.png
 hover_art: /assets/wip004-cover-small.png
 background_images:
