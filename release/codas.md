@@ -10,7 +10,8 @@ tracklist:
   - side_name: a
     tracks:
       - 申
-      - dádiva (prelude)
+      - dádiva (pre\\
+      - lude)
       - '"mirror'
       - room"
       - fka drudms (interlude)
