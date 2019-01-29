@@ -28,8 +28,6 @@ cover_art: /assets/wip004-cover-small.png
 hover_art: /assets/wip004-cover-small.png
 background_images:
   - /assets/art-1.jpeg
-  - /assets/layout-3.jpeg
-  - /assets/layout-1.jpeg
 description: >
   Codas was produced as a collaborative project between `Ways Inner Pass` and `Y
   S D M`, an architecture and design studio run by two close friends of ours in
@@ -59,9 +57,9 @@ description: >
   Masterered by Sean McCann.
 
   Special thanks to Jim for the te-1.
-release_box_styling:
+Release Box Styling:
   width: '600'
-  x: '20'
+  x: '15'
   'y': '15'
 ---
 
