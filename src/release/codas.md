@@ -27,9 +27,10 @@ hover_art: /assets/wip004-cover-small.png
 background_images:
   - /assets/wip004-cover-small.png
 description: sth cool
-Release Box Styling:
+release_box_styling:
   width: 300
   x: 80
-  'y': 40
+  y: 40
+
 ---
 

@@ -42,7 +42,7 @@ collections:
         widget: list
         field: { label: Image, name: image, widget: image }
       - { name: description, label: Release Description, widget: markdown }
-      - name: Release Box Styling
+      - name: release_box_styling
         label: Release Box Styling
         widget: object
         fields:

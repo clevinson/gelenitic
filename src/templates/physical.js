@@ -38,7 +38,7 @@ export default ({ data }) => {
     <ReleaseTextBox data={release}/>
     <BackgroundImages>
     { images.map((img_url, i) => {
-      return <img alt="" key={i} src={"/img/" + img_url} />
+      return <img alt="" key={i} src={img_url} />
       })
     }
     </BackgroundImages>
@@ -54,19 +54,24 @@ export const query = graphql`
       frontmatter {
         title
         artist
-        release_date
         cat_no
-        width
-        position {
+        release_date
+        format
+        in_stock
+        purchase_link
+        cover_art
+        hover_art
+        description
+        release_box_styling {
+          width
           x
           y
         }
-        tracklist {
-          a
-          b
-        }
         background_images
-        purchase_link
+        tracklist {
+          side_name
+          tracks
+        }
       }
     }
   }

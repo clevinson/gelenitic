@@ -9,10 +9,10 @@ const ReleaseTextBox = styled.div`
   background-color: #fff;
   box-sizing: border-box;
 
-  width: ${props => props.width};
+  width: ${props => props.width}px;
   position: absolute;
-  left: ${props => props.x};
-  top: ${props => props.y};
+  left: ${props => props.x}px;
+  top: ${props => props.y}px;
 
   @media only screen and ${Small} {
     position: static;
@@ -102,10 +102,10 @@ const SoldOutButton = styled.div`
 `
 
 let renderTracklist = function(tracklist) {
-  return Object.keys(tracklist).map((sideName, i) => {
+  return tracklist.map((side, i) => {
       return <ul key={i}>
-        <SideName >{sideName}</SideName>
-        { tracklist[sideName].map((trackName, j) => {
+        <SideName >{side.side_name}</SideName>
+        { side.tracks.map((trackName, j) => {
           return (<TrackListItem key={j}>{trackName}</TrackListItem>)
         })}
       </ul>
@@ -123,7 +123,7 @@ let renderPurchaseButton = function(purchase_link) {
 
 export default ({data, ...other }) => (
   <Draggable>
-    <ReleaseTextBox width={ data.width } x={ data.position.x } y={ data.position.y } {...other}>
+    <ReleaseTextBox width={ data.release_box_styling.width } x={ data.release_box_styling.x } y={ data.release_box_styling.y } {...other}>
       <LineHeader>{ data.artist }</LineHeader>
       <LineHeader>{ data.title }</LineHeader>
       <LineText>{ data.metadata_date }</LineText>
