@@ -38,7 +38,7 @@ export default ({ data }) => {
     <ReleaseTextBox data={release}/>
     <BackgroundImages>
     { images.map((img_url, i) => {
-      return <img alt="" key={i} src={"/img/" + img_url} />
+      return <img alt="" key={i} src={ img_url } />
       })
     }
     </BackgroundImages>

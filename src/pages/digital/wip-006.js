@@ -7,7 +7,7 @@ import CryptoJS from 'crypto-js'
 
 const PageContainer = styled.div`
   .back {
-    background-image: url('../../img/codas/art-1.jpeg');
+    background-image: url('/assets/WIP006/art-1.jpeg');
       top: 0px;
       left: 0px;
       height: 100%;
