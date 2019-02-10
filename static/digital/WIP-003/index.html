@@ -295,8 +295,8 @@
     pboYOffset = updateCoordWithMax(pboYOffset, 3*relativeMouseY, dt);
 
 
-    //$('#player-border').css({transform: "translate(" + pbXOffset + "em," + pbYOffset + "em)"});
-    //$('#all-holder').css({transform: "translate(" + pboXOffset + "em," + pboYOffset + "em)"});
+    $('#player-border').css({transform: "translate(" + pbXOffset + "em," + pbYOffset + "em)"});
+    $('#all-holder').css({transform: "translate(" + pboXOffset + "em," + pboYOffset + "em)"});
   }
 
   function updateCoordWithMax(position, max, dt) {
