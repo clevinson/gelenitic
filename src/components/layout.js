@@ -84,7 +84,7 @@ export default ({ children }) => (
     <NavBar>
         <Flank></Flank>
         <Slink to="/">
-          <img alt="WIP" src="/img/waysinnerpass-logo.svg"/>
+          <img alt="WIP" src="/assets/waysinnerpass-logo.svg"/>
         </Slink>
         <Flank>
         <NavLinks>
