@@ -56,6 +56,7 @@ export const query = graphql`
         artist
         release_date
         cat_no
+        format
         width
         position {
           x
@@ -67,6 +68,11 @@ export const query = graphql`
         }
         background_images
         purchase_link
+        purchase_links {
+          label
+          url
+        }
+        sold_out
       }
     }
   }
