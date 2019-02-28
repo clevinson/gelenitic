@@ -35,7 +35,7 @@ injectGlobal`
   }
 `
 
-const NavBar = styled.div`
+const NavBar = styled.footer`
 
   opacity: 1;
   transition: opacity 0.5s linear;
@@ -64,6 +64,14 @@ const Flank = styled.span`
   width: 100%;
 `
 
+const Cart = styled(Slink)`
+    padding-left: 7%;
+
+  @media only screen and ${SmallMediaQuery} {
+    padding-left: 15px;
+  }
+`
+
 const NavLinks = styled(Flank)`
 
   display: flex;
@@ -89,7 +97,9 @@ export default ({ hideFooter, children }) => (
   <div>
     {children}
     <NavBar hidden={hideFooter}>
-        <Flank></Flank>
+        <Flank>
+          <Cart to="https://www.paypal.com/cgi-bin/webscr?cmd=_cart&business=J9EYATKXH2A52&display=1" rel="noopener noreferrer" target="_blank">view cart</Cart>
+        </Flank>
         <Slink to="/">
           <img alt="WIP" src="/assets/waysinnerpass-logo.svg"/>
         </Slink>
