@@ -1,7 +1,7 @@
 import React from "react"
 import {Link, Slink, Sa} from "./link"
 import styled from "styled-components"
-import {Small} from "../global-variables"
+import {SmallMediaQuery} from "../global-variables"
 import Draggable from "../components/draggable"
 
 const ReleaseTextBox = styled.div`
@@ -14,7 +14,14 @@ const ReleaseTextBox = styled.div`
   left: ${props => props.x};
   top: ${props => props.y};
 
-  @media only screen and ${Small} {
+  transition: opacity 0.5s linear;
+
+  ${props => props.hideContent && `
+    opacity: 0;
+    pointer-events: none;
+  `}
+
+  @media only screen and ${SmallMediaQuery} {
     position: static;
     width: 100%;
   }
@@ -208,7 +215,7 @@ class PurchaseButton extends React.Component {
     } else if (this.props.purchaseLinks.length == 1) {
       let link = this.props.purchaseLinks[0]
 
-      return <SingleButton href={link.url}>{link.label}</SingleButton>
+      return <SingleButton href={link.url} target="_blank">{link.label}</SingleButton>
     } else {
       return (
         <MultiButton showPurchaseOptions={this.state.showPurchaseOptions} >

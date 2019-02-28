@@ -1,7 +1,7 @@
 import React from "react"
 import {Slink} from "./link"
 import styled, {injectGlobal} from "styled-components"
-import {Small} from "../global-variables"
+import {SmallMediaQuery} from "../global-variables"
 
 
 injectGlobal`
@@ -35,7 +35,10 @@ injectGlobal`
   }
 `
 
-const NavBar = styled.footer`
+const NavBar = styled.div`
+
+  opacity: 1;
+  transition: opacity 0.5s linear;
   display: flex;
   flex-direction: row;
   justify-content: space-evenly;
@@ -47,6 +50,10 @@ const NavBar = styled.footer`
   left: 0px;
   bottom: 0px;
 
+  ${props => props.hidden && `
+    pointer-events: none;
+    opacity: 0;
+  `}
 
   img {
     width: 60px;
@@ -66,7 +73,7 @@ const NavLinks = styled(Flank)`
   max-width: 300px;
   float: right;
 
-  @media only screen and ${Small} {
+  @media only screen and ${SmallMediaQuery} {
     width: auto;
     display: flex;
     flex-direction: column;
@@ -78,10 +85,10 @@ const NavLinks = styled(Flank)`
 `
 
 
-export default ({ children }) => (
+export default ({ hideFooter, children }) => (
   <div>
     {children}
-    <NavBar>
+    <NavBar hidden={hideFooter}>
         <Flank></Flank>
         <Slink to="/">
           <img alt="WIP" src="/assets/waysinnerpass-logo.svg"/>

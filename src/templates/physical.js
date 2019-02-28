@@ -3,7 +3,7 @@ import ReleaseTextBox from "../components/release-textbox"
 import { graphql } from "gatsby"
 import Layout from "../components/layout"
 import styled from "styled-components"
-import {Small} from "../global-variables"
+import {SmallMediaQuery, SmallWidth} from "../global-variables"
 
 const BackgroundImages = styled.div`
   width: 100%;
@@ -20,32 +20,58 @@ const BackgroundImages = styled.div`
     display: block;
   }
 
-  @media only screen and ${Small} {
+  cursor: pointer;
+
+  @media only screen and ${SmallMediaQuery} {
+    cursor: auto;
     width: 100%;
     position: static;
     display: block;
   }
 `
 
-export default ({ data }) => {
-  let release = data.markdownRemark.frontmatter
-  release.description = data.markdownRemark.html
+class PhysicalPage extends React.Component {
 
-  const images = data.markdownRemark.frontmatter.background_images
-  return (
-  <Layout>
-  <div className="container">
-    <ReleaseTextBox data={release}/>
-    <BackgroundImages>
-    { images.map((img_url, i) => {
-      return <img alt="" key={i} src={ img_url } />
-      })
+  constructor(props) {
+    super(props)
+    this.state = {
+      hideContent: false
+    };
+  }
+
+  backgroundClick = (e) => {
+    // only make background clickable on non-mobile sized creens
+    if(window.innerWidth > SmallWidth) {
+      this.setState( prevState => ({
+        hideContent: !prevState.hideContent
+      }))
     }
-    </BackgroundImages>
-  </div>
-  </Layout>
-  )
+  }
+
+  render() {
+    let data = this.props.data
+    let release = data.markdownRemark.frontmatter
+    release.description = data.markdownRemark.html
+
+    const images = data.markdownRemark.frontmatter.background_images
+    return (
+    <Layout hideFooter={this.state.hideContent} >
+      <div className="container">
+        <ReleaseTextBox hideContent={this.state.hideContent} data={release}/>
+        <BackgroundImages onClick={this.backgroundClick} >
+        { images.map((img_url, i) => {
+          return <img alt="" key={i} src={ img_url } />
+          })
+        }
+        </BackgroundImages>
+      </div>
+    </Layout>
+    )
+  }
 }
+
+
+export default PhysicalPage
 
 export const query = graphql`
   query($slug: String!) {

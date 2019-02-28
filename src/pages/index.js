@@ -1,9 +1,9 @@
 import React from "react"
-import {Sa, Slink} from "../components/link"
+import {Sa, Slink, Link} from "../components/link"
 import { graphql } from "gatsby"
 import Layout from "../components/layout"
 import styled from "styled-components"
-import {Small, Medium} from "../global-variables"
+import {SmallMediaQuery, MediumMediaQuery} from "../global-variables"
 
 const ReleaseList = styled.ul`
   width: 800px;
@@ -11,11 +11,11 @@ const ReleaseList = styled.ul`
   box-sizing: border-box;
   padding: 15px;
 
-  @media only screen and ${Medium} {
+  @media only screen and ${MediumMediaQuery} {
     width: 520px;
   }
 
-  @media only screen and ${Small} {
+  @media only screen and ${SmallMediaQuery} {
     width: 100%;
   }
 
@@ -29,7 +29,7 @@ const ReleaseList = styled.ul`
     text-align: right;
   }
 
-  @media only screen and ${Small} {
+  @media only screen and ${SmallMediaQuery} {
     li {
       flex-direction: column !important;
       padding-top: 0;
@@ -53,7 +53,7 @@ const Art = styled.div`
   width: 45%;
   position: relative;
 
-  @media only screen and ${Small} {
+  @media only screen and ${SmallMediaQuery} {
     width: 100%;
   }
 `
@@ -76,7 +76,7 @@ const HoverArt = styled.img`
 const Info = styled.div`
   width: 45%;
 
-  @media only screen and ${Small} {
+  @media only screen and ${SmallMediaQuery} {
     width: 100%;
     padding-top: 15px;
     box-sizing: border-box;
@@ -107,8 +107,10 @@ export default ({ data }) => {
       return (
       <Release key={i} className={isEven(i)}>
         <Art>
+          <Link href={ node.fields.slug }>
             <CoverArt src={ release.cover_art }/>
             <HoverArt src={ release.hover_art }/>
+          </Link>
         </Art>
         <Info>
           <Header>{ release.artist }</Header>
