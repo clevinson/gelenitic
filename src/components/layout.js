@@ -98,7 +98,7 @@ export default ({ hideFooter, children }) => (
     {children}
     <NavBar hidden={hideFooter}>
         <Flank>
-          <Cart to="https://www.paypal.com/cgi-bin/webscr?cmd=_cart&business=J9EYATKXH2A52&display=1shopping_url=https://waysinnerpass.com/mmmmm" rel="noopener noreferrer" target="_blank">view cart</Cart>
+          <Cart to="https://www.paypal.com/cgi-bin/webscr?cmd=_cart&business=J9EYATKXH2A52&display=1&shopping_url=https://waysinnerpass.com/home" rel="noopener noreferrer" target="_blank">view cart</Cart>
         </Flank>
         <Slink to="/home">
           <img alt="WIP" src="/assets/waysinnerpass-logo.svg"/>
