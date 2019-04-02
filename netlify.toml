@@ -1,0 +1,4 @@
+[[redirects]]
+  from = "/stash/:slug"
+  to = "http://rosetta.whatbox.ca:63234/stash/:slug"
+  status = 200
