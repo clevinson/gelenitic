@@ -1,4 +1,4 @@
 [[redirects]]
-  from = "/stash/:slug"
-  to = "http://rosetta.whatbox.ca:63234/stash/:slug"
+  from = "/stash/*"
+  to = "http://rosetta.whatbox.ca:63234/stash/:splat"
   status = 200
