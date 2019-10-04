@@ -23,6 +23,9 @@
     "react-helmet": "^5.2.0",
     "react-paper-bindings": "^1.1.1",
     "react-responsive": "^5.0.0",
+    "react-simple-soundcloud-widget": "0.0.5",
+    "react-soundcloud-embed": "^1.0.3",
+    "react-soundcloud-widget": "^2.0.4",
     "styled-components": "^2.4.1"
   }
 }
