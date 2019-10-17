@@ -1,7 +1,9 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Shaders, Node, GLSL } from "gl-react";
+import { Shaders, Node, GLSL } from "gl-react"
 import { Surface } from "gl-react-dom"; // for React DOM
+import GlobalStyle from "../../components/global-style.js"
+import Vignette from "../../components/vignette.js"
 
 
 const shaders = Shaders.create({
@@ -27,11 +29,12 @@ class HelloBlue extends React.Component {
 
 const PageContainer = styled.div`
   .back {
-    background-image: url('/assets/WIP006/art-1.jpeg');
+      background-image: url('${props => props.source}');
+      background-size: cover;
       top: 0px;
       left: 0px;
-      height: 100%;
-      width: 100%;
+      height: ${props => props.height}px;
+      width: ${props => props.width}px;
       position: fixed;
   }
 
@@ -42,7 +45,6 @@ const PageContainer = styled.div`
       overflow: auto;
       top: 0px;
       left: 0px;
-      background: rgba(255, 255, 255, 0.7); /*can be anything, of course*/
   }
 
   footer {
@@ -65,15 +67,59 @@ const PageContainer = styled.div`
   }
 `
 
-export default () => (
-  <PageContainer>
-    <div className="back">
-    </div>
-    <div className="overlay">
-    </div>
-    <Surface>
-      <HelloBlue/>
-    </Surface>
-  </PageContainer>
-)
 
+class AdvancedEffects extends React.Component {
+
+  constructor (props) {
+    super(props);
+    let picNr = parseInt(props.location.search.slice(1));
+    let imageSrc;
+
+    if (picNr >= 1 && picNr < 26) {
+      imageSrc = "/assets/WIP005/" + picNr + ".png"
+    } else {
+      imageSrc = "/assets/WIP005/circadia-art-full.png"
+    }
+
+    console.log(imageSrc);
+
+    this.state = {
+      time: 0.02,
+      frames: 1,
+      imageSrc: imageSrc
+    };
+  }
+
+  componentDidMount () {
+    let startTime;
+    const loop = t => {
+      requestAnimationFrame(loop);
+      if (!startTime) startTime = t;
+      const time = (t - startTime) / 1000;
+      this.setState({ time: time, frames: this.state.frames+1 });
+    };
+    requestAnimationFrame(loop);
+  }
+
+  render () {
+    const {time, frames, imageSrc} = this.state;
+
+    return (
+      <PageContainer width={window.innerWidth} height={window.innerHeight} source={imageSrc}>
+        <GlobalStyle/>
+        <div className="back">
+        </div>
+        <div className="overlay">
+        </div>
+          <Vignette
+            time={time}
+            width={window.innerWidth}
+            height={window.innerHeight}
+            source={imageSrc}
+          />
+      </PageContainer>
+    )
+  }
+}
+
+export default AdvancedEffects
