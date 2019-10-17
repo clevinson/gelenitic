@@ -1,8 +1,27 @@
 import React from 'react'
-import Helmet from 'react-helmet'
-import Layout from '../../components/layout'
 import styled from 'styled-components'
-import SoundCloudWidget from 'react-simple-soundcloud-widget'
+import { Shaders, Node, GLSL } from "gl-react";
+import { Surface } from "gl-react-dom"; // for React DOM
+
+
+const shaders = Shaders.create({
+  helloBlue: {
+    frag: GLSL`
+precision highp float;
+varying vec2 uv;
+uniform float blue;
+void main() {
+  gl_FragColor = vec4(uv.x, uv.y, blue, 1.0);
+}`
+  }
+});
+
+class HelloBlue extends React.Component {
+  render() {
+    const { blue } = this.props;
+    return <Node shader={shaders.helloBlue} uniforms={{ blue }} />;
+  }
+}
 
 
 
@@ -52,13 +71,9 @@ export default () => (
     </div>
     <div className="overlay">
     </div>
-    <ul> </ul>
-    <SoundCloudWidget
-      url={"https://soundcloud.com/wetmale/blind-voice&secret_token=s-HjwdU"}
-      config={{show_user: false, secret_token: 's-HjwdU'}}
-      secret_token={'s-TIzMQ'}
-      id={"react-sc-widget"}
-    />
+    <Surface>
+      <HelloBlue/>
+    </Surface>
   </PageContainer>
 )
 

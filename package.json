@@ -12,20 +12,16 @@
     "crypto-js": "^3.1.9-1",
     "gatsby": "^2.0.99",
     "gatsby-link": "^2.0.9",
-    "gatsby-plugin-netlify-cms": "^3.0.10",
     "gatsby-plugin-styled-components": "^3.0.0-rc.5",
     "gatsby-source-filesystem": "^2.0.18",
     "gatsby-transformer-remark": "^2.1.1-rc.5",
-    "netlify-cms": "^2.3.3",
+    "gl-react": "^3.17.2",
+    "gl-react-dom": "^3.17.2",
     "react": "^16.4.2",
     "react-dom": "^16.4.2",
     "react-draggable": "^3.0.5",
     "react-helmet": "^5.2.0",
-    "react-paper-bindings": "^1.1.1",
     "react-responsive": "^5.0.0",
-    "react-simple-soundcloud-widget": "0.0.5",
-    "react-soundcloud-embed": "^1.0.3",
-    "react-soundcloud-widget": "^2.0.4",
     "styled-components": "^2.4.1"
   }
 }

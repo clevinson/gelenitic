@@ -1,9 +1,6 @@
 import React from "react"
-import {Sa, Slink, Link} from "../components/link"
-import { graphql } from "gatsby"
-import Layout from "../components/layout"
+import {Link} from "../components/link"
 import styled from "styled-components"
-import {SmallMediaQuery, MediumMediaQuery} from "../global-variables"
 
 const LogoImg = styled.img`
   width: 320px;
