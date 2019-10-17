@@ -70,6 +70,10 @@ const PageContainer = styled.div`
 
 class AdvancedEffects extends React.Component {
 
+  updateWindowDimensions() {
+    this.setState({ width: window.innerWidth, height: window.innerHeight });
+  }
+
   constructor (props) {
     super(props);
     let picNr = parseInt(props.location.search.slice(1));
@@ -85,9 +89,15 @@ class AdvancedEffects extends React.Component {
       time: 0.02,
       frames: 1,
       imageSrc: imageSrc,
-      width: window.innerWidth,
-      height: window.innerHeight
+      width: 0,
+      height: 0,
     };
+
+    this.updateWindowDimensions = this.updateWindowDimensions;
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.updateWindowDimensions);
   }
 
 
@@ -100,6 +110,9 @@ class AdvancedEffects extends React.Component {
       this.setState({ time: time, frames: this.state.frames+1 });
     };
     requestAnimationFrame(loop);
+
+    this.updateWindowDimensions();
+    window.addEventListener('resize', this.updateWindowDimensions);
   }
 
   render () {
