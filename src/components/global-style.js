@@ -1,16 +1,6 @@
 import { createGlobalStyle } from 'styled-components'
 
 const GlobalStyle = createGlobalStyle`
-  @font-face {
-      font-family: 'ocr_bregular';
-      src: url('/fonts/OCR-B-webfont.eot');
-      src: url('/fonts/OCR-B-webfont.eot?#iefix') format('embedded-opentype'),
-           url('/fonts/OCR-B-webfont.woff') format('woff'),
-           url('/fonts/OCR-B-webfont.ttf') format('truetype'),
-           url('/fonts/OCR-B-webfont.svg#ocr_bregular') format('svg');
-      font-weight: normal;
-      font-style: normal;
-  }
   body, pre {
     font-family: 'ocr_bregular', Monaco, monospace;
     font-size: 10px;

@@ -53,8 +53,6 @@ const StyledForm = styled.form`
   display: flex;
   flex-direction: column;
 
-  font-family: Monaco;
-
   label {
     font-size: 1.2em;
     border-bottom: black 1px solid;
