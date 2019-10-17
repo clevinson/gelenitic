@@ -24,11 +24,11 @@ vec3 coloredLookup (float colorSeparation, vec2 orientation, float amp2) { // lo
   vec2 tvDims = vec2(300.0,350.0);
   vec2 warpedPos = lookup(vec2(0), amp2);
 
-  if (tvDims.x*mod(mix(uv.x,warpedPos.x,0.0), 1.0/tvDims.x) < 0.19 ) {
-    float darken = 0.0;
+  if (tvDims.x*mod(mix(uv.x,warpedPos.x,0.5), 1.0/tvDims.x) < 0.2 ) {
+    float darken = 0.4;
     return vec3(
-      darken*texture2D(texture, lookup(colorSeparation * orientation, amp2)).r,
-      darken*texture2D(texture, lookup(-colorSeparation * orientation, amp2)).g,
+      darken*texture2D(texture, lookup(colorSeparation * vec2(0.0,1.0), amp2)).r,
+      darken*texture2D(texture, lookup(-colorSeparation * vec2(0.0,1.0), amp2)).g,
       darken*texture2D(texture, lookup(vec2(0.0), amp2)).b);
   } else if (tvDims.y*mod(warpedPos.y, 1.0/tvDims.y) < 0.33334 ) {
     vec2 warpedPos = lookup(colorSeparation * orientation, amp2);

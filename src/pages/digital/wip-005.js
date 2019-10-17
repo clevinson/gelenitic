@@ -4,7 +4,7 @@ import { Shaders, Node, GLSL } from "gl-react"
 import { Surface } from "gl-react-dom"; // for React DOM
 import GlobalStyle from "../../components/global-style.js"
 import Vignette from "../../components/vignette.js"
-import { URLSearchParams } from 'url'
+import 'url-search-params-polyfill'
 
 const PageContainer = styled.div`
   .back {
