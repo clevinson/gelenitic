@@ -93,7 +93,7 @@ class AdvancedEffects extends React.Component {
       height: 0,
     };
 
-    this.updateWindowDimensions = this.updateWindowDimensions;
+    this.updateWindowDimensions = this.updateWindowDimensions.bind(this);
   }
 
   componentWillUnmount() {
