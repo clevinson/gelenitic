@@ -43,3 +43,27 @@ exports.createPages = ({ graphql, actions }) => {
     })
   })
 }
+
+
+
+
+exports.onCreateDevServer = ({ app, store }) => {
+  const { program } = store.getState()
+  const serveStaticHtml = (urlPath) => {
+    app.get(urlPath, function(req, res) {
+      res.sendFile(
+        path.join(program.directory, 'public' + urlPath + '/index.html'),
+        err => {
+          if (err) {
+            res.status(500).end(err.message)
+          }
+        }
+      )
+    })
+  }
+
+  serveStaticHtml(`/digital/WIP-001`)
+  serveStaticHtml(`/digital/WIP-002`)
+  serveStaticHtml('/digital/WIP-003')
+  serveStaticHtml('/digital/WIP-004')
+}

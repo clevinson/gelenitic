@@ -1,10 +1,10 @@
 import React from "react"
 import {Slink} from "./link"
-import styled, {injectGlobal} from "styled-components"
+import styled, {createGlobalStyle} from "styled-components"
 import {SmallMediaQuery} from "../global-variables"
 
 
-injectGlobal`
+const GlobalStyle = createGlobalStyle`
   @font-face {
       font-family: 'ocr_bregular';
       src: url('/fonts/OCR-B-webfont.eot');
@@ -95,6 +95,7 @@ const NavLinks = styled(Flank)`
 
 export default ({ hideFooter, children }) => (
   <div>
+    <GlobalStyle/>
     {children}
     <NavBar hidden={hideFooter}>
         <Flank>
