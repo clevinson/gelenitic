@@ -30,7 +30,7 @@ class HelloBlue extends React.Component {
 const PageContainer = styled.div`
   .back {
       background-image: url('${props => props.source}');
-      background-size: cover;
+      background-size: ${props => props.width}px ${props => props.height}px;
       top: 0px;
       left: 0px;
       height: ${props => props.height}px;
@@ -81,14 +81,15 @@ class AdvancedEffects extends React.Component {
       imageSrc = "/assets/WIP005/circadia-art-full.png"
     }
 
-    console.log(imageSrc);
-
     this.state = {
       time: 0.02,
       frames: 1,
-      imageSrc: imageSrc
+      imageSrc: imageSrc,
+      width: window.innerWidth,
+      height: window.innerHeight
     };
   }
+
 
   componentDidMount () {
     let startTime;
@@ -105,7 +106,7 @@ class AdvancedEffects extends React.Component {
     const {time, frames, imageSrc} = this.state;
 
     return (
-      <PageContainer width={window.innerWidth} height={window.innerHeight} source={imageSrc}>
+      <PageContainer width={this.state.width} height={this.state.height} source={imageSrc}>
         <GlobalStyle/>
         <div className="back">
         </div>
@@ -113,8 +114,8 @@ class AdvancedEffects extends React.Component {
         </div>
           <Vignette
             time={time}
-            width={window.innerWidth}
-            height={window.innerHeight}
+            width={this.state.width}
+            height={this.state.height}
             source={imageSrc}
           />
       </PageContainer>
