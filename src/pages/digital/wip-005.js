@@ -1,14 +1,11 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Shaders, Node, GLSL } from "gl-react"
-import { Surface } from "gl-react-dom"; // for React DOM
 import GlobalStyle from "../../components/global-style.js"
 import Vignette from "../../components/vignette.js"
 import 'url-search-params-polyfill'
 
 const PageContainer = styled.div`
   .back {
-      background-size: ${props => props.width}px ${props => props.height}px;
       top: 0px;
       left: 0px;
       height: ${props => props.height}px;
@@ -65,60 +62,6 @@ const StyledForm = styled.form`
   }
 `
 
-class ControlUI extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      imageNr: 0,
-      imageUrl: "",
-      distortScale: 1
-    };
-
-    this.handleInputChange = this.handleInputChange.bind(this);
-  }
-
-  handleInputChange(event) {
-    const target = event.target;
-    const value = target.value;
-    const name = target.name;
-
-    this.setState({
-      [name]: value
-    });
-  }
-
-  render() {
-    return (
-      <StyledForm>
-        <label>
-          image selector (0-26):
-          <input
-            name="imageNr"
-            type="number"
-            value={this.state.imageNr}
-            onChange={this.handleInputChange} />
-        </label>
-        <label>
-          custom image url:
-          <input
-            name="imageUrl"
-            type="text"
-            value={this.state.imageUrl}
-            onChange={this.handleInputChange} />
-        </label>
-        <label>
-          Distort Amplifier:
-          <input
-            name="distortScale"
-            type="number"
-            value={this.state.distortScale}
-            onChange={this.handleInputChange} />
-        </label>
-      </StyledForm>
-    );
-  }
-}
-
 class AdvancedEffects extends React.Component {
 
   updateWindowDimensions() {
@@ -137,22 +80,10 @@ class AdvancedEffects extends React.Component {
 
   constructor (props) {
     super(props);
-    let params = new URLSearchParams(props.location.search);
-    let picNr = parseInt(params.get("pic"));
-    let distortScale = parseInt(params.get("distort"));
-    let imageSrc;
-
-    if (picNr >= 1 && picNr < 26) {
-      imageSrc = "/assets/WIP005/" + picNr + ".png"
-    } else {
-      imageSrc = "/assets/WIP005/circadia-art-full.png"
-    }
 
     this.state = {
       time: 0.02,
       frames: 1,
-      imageSrc: imageSrc,
-      distortScale: distortScale,
       width: 0,
       height: 0,
       imageNr: 0,
@@ -184,7 +115,7 @@ class AdvancedEffects extends React.Component {
   }
 
   getImageUrl() {
-    if (this.state.imageUrl != "") {
+    if (this.state.imageUrl !== "") {
       return this.state.imageUrl
     }
     if (this.state.imageNr >= 1 && this.state.imageNr < 26) {
@@ -195,15 +126,11 @@ class AdvancedEffects extends React.Component {
   }
 
   render () {
-    const {time, frames, imageSrc, distortScale} = this.state;
+    const {time, distortScale} = this.state;
 
     return (
-      <PageContainer width={this.state.width} height={this.state.height} source={imageSrc}>
+      <PageContainer width={this.state.width} height={this.state.height}>
         <GlobalStyle/>
-        <div className="back">
-        </div>
-        <div className="overlay">
-        </div>
           <Vignette
             distortScale={distortScale}
             time={time}
