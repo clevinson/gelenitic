@@ -3,7 +3,6 @@ import styled from 'styled-components'
 import GlobalStyle from "../../components/global-style.js"
 import Vignette from "../../components/vignette.js"
 import 'url-search-params-polyfill'
-import SoundcloudWidget from "soundcloud-widget"
 import ScPlayer from "../../components/sc-player.js"
 
 const PlayerContainer = styled.div`
@@ -112,7 +111,6 @@ class CircadiaApp extends React.Component {
   componentDidMount () {
     this.updateWindowDimensions();
     window.addEventListener('resize', this.updateWindowDimensions);
-    //this.state.widget = new SoundcloudWidget('sc-player')
   }
 
 
