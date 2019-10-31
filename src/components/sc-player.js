@@ -43,21 +43,25 @@ class ScPlayer extends React.Component {
     super(props)
 
     this.state = {
-      player: new SoundCloudAudio('1796bdbd7f77b6ccf8654cf6fa432669'),
+      player: null,
       trackTitle: null,
       tracks: null,
       nowPlaying: false,
       playbackStarted: false,
     }
+  }
 
-    this.state.player.resolve("https://soundcloud.com/keptmale/sets/ost-circadia/s-TIzMQ", (playlist) => {
-      console.log(playlist);
-      this.setState({
-        trackTitle: playlist.title,
-        tracks: playlist.tracks
+  componentDidMount() {
+    if (typeof document !== `undefined`) {
+      let player = new SoundCloudAudio('1796bdbd7f77b6ccf8654cf6fa432669')
+      player.resolve("https://soundcloud.com/keptmale/sets/ost-circadia/s-TIzMQ", (playlist) => {
+        this.setState({
+          player: player,
+          trackTitle: playlist.title,
+          tracks: playlist.tracks
+        })
       })
-    })
-
+    }
   }
 
   playerInfo = () => {
