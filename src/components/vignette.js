@@ -67,9 +67,12 @@ class Vignette extends React.Component {
     super(props);
     this.onMouseMove = this.onMouseMove.bind(this);
     this.state = {
-      finger: [0.5, 0.5]
+      finger: [0.5, 0.5],
+      time: 0.02,
+      frames: 1,
     };
   }
+
   onMouseMove (evt) {
     const { width, height } = this.props;
     const { clientX, clientY } = evt;
@@ -81,9 +84,21 @@ class Vignette extends React.Component {
     this.setState({ finger: [x/width, 1-y/height] });
   }
 
+  componentDidMount () {
+    let startTime;
+    const loop = t => {
+      requestAnimationFrame(loop);
+      if (!startTime) startTime = t;
+      const time = (t - startTime) / 1000;
+      this.setState({ time: time, frames: this.state.frames+1 });
+    };
+    requestAnimationFrame(loop);
+  }
+
+
   render () {
-    const { width, height, time, source, distortScale } = this.props;
-    const { finger } = this.state;
+    const { width, height, source, distortScale } = this.props;
+    const { finger, time } = this.state;
     let ampScale = distortScale || 1;
     return <Surface
       ref="view"

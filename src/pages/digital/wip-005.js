@@ -3,6 +3,16 @@ import styled from 'styled-components'
 import GlobalStyle from "../../components/global-style.js"
 import Vignette from "../../components/vignette.js"
 import 'url-search-params-polyfill'
+import SoundcloudWidget from "soundcloud-widget"
+import ScPlayer from "../../components/sc-player.js"
+
+const PlayerContainer = styled.div`
+  position: absolute;
+  width: 100%;
+  height: 50px;
+  bottom: 0;
+  opacity: 30%;
+`
 
 const PageContainer = styled.div`
   .back {
@@ -47,7 +57,7 @@ const StyledForm = styled.form`
   bottom: 0;
   background: rgba(255,255,255,0.8);
   padding: 5px;
-  display: flex;
+  display: none;
   flex-direction: column;
 
   label {
@@ -62,7 +72,7 @@ const StyledForm = styled.form`
   }
 `
 
-class AdvancedEffects extends React.Component {
+class CircadiaApp extends React.Component {
 
   updateWindowDimensions() {
     this.setState({ width: window.innerWidth, height: window.innerHeight });
@@ -82,36 +92,33 @@ class AdvancedEffects extends React.Component {
     super(props);
 
     this.state = {
-      time: 0.02,
-      frames: 1,
       width: 0,
       height: 0,
       imageNr: 0,
       imageUrl: "",
-      distortScale: 1
+      distortScale: 1,
+      widget: null
     };
 
     this.handleInputChange = this.handleInputChange.bind(this);
     this.updateWindowDimensions = this.updateWindowDimensions.bind(this);
+    this.playTrack = this.playTrack.bind(this);
   }
 
   componentWillUnmount() {
     window.removeEventListener('resize', this.updateWindowDimensions);
   }
 
-
   componentDidMount () {
-    let startTime;
-    const loop = t => {
-      requestAnimationFrame(loop);
-      if (!startTime) startTime = t;
-      const time = (t - startTime) / 1000;
-      this.setState({ time: time, frames: this.state.frames+1 });
-    };
-    requestAnimationFrame(loop);
-
     this.updateWindowDimensions();
     window.addEventListener('resize', this.updateWindowDimensions);
+    //this.state.widget = new SoundcloudWidget('sc-player')
+  }
+
+
+  playTrack() {
+    this.state.widget.toggle()
+
   }
 
   getImageUrl() {
@@ -126,18 +133,20 @@ class AdvancedEffects extends React.Component {
   }
 
   render () {
-    const {time, distortScale} = this.state;
+    const {distortScale} = this.state;
 
     return (
       <PageContainer width={this.state.width} height={this.state.height}>
         <GlobalStyle/>
           <Vignette
             distortScale={distortScale}
-            time={time}
             width={this.state.width}
             height={this.state.height}
             source={this.getImageUrl()}
           />
+          <PlayerContainer>
+            <ScPlayer name="yum"/>
+          </PlayerContainer>
         <StyledForm>
           <label>
             image selector (0-26):
@@ -164,10 +173,11 @@ class AdvancedEffects extends React.Component {
               onChange={this.handleInputChange} />
           </label>
         </StyledForm>
-      
       </PageContainer>
     )
   }
 }
 
-export default AdvancedEffects
+
+
+export default CircadiaApp
