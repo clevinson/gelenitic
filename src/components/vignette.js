@@ -21,16 +21,16 @@ vec2 lookup (vec2 offset, float amp2) { // lookup must return a position coordin
 }
 
 vec3 coloredLookup (float colorSeparation, vec2 orientation, float amp2) { // lookup must return a position coordinate 
-  vec2 tvDims = vec2(300.0,350.0);
+  vec2 tvDims = vec2(400.0,250.0);
   vec2 warpedPos = lookup(vec2(0), amp2);
 
-  if (tvDims.x*mod(mix(uv.x,warpedPos.x,0.5), 1.0/tvDims.x) < 0.2 ) {
-    float darken = 0.4;
-    return vec3(
-      darken*texture2D(texture, lookup(colorSeparation * vec2(0.0,1.0), amp2)).r,
-      darken*texture2D(texture, lookup(-colorSeparation * vec2(0.0,1.0), amp2)).g,
-      darken*texture2D(texture, lookup(vec2(0.0), amp2)).b);
-  } else if (tvDims.y*mod(warpedPos.y, 1.0/tvDims.y) < 0.33334 ) {
+  //if (tvDims.x*mod(mix(uv.x,warpedPos.x,5.0), 1.0/tvDims.x) < 0.0 ) {
+  //  float darken = 0.4;
+  //  return vec3(
+  //    darken*texture2D(texture, lookup(colorSeparation * vec2(0.0,1.0), amp2)).r,
+  //    darken*texture2D(texture, lookup(-colorSeparation * vec2(0.0,1.0), amp2)).g,
+  //    darken*texture2D(texture, lookup(vec2(0.0), amp2)).b);
+  if (tvDims.y*mod(warpedPos.y, 1.0/tvDims.y) < 0.33334 ) {
     vec2 warpedPos = lookup(colorSeparation * orientation, amp2);
     vec2 loc = warpedPos - mod(warpedPos,1.0/tvDims);
     return vec3(texture2D(texture, loc).r, 0.0, 0.0);
@@ -47,8 +47,8 @@ vec3 coloredLookup (float colorSeparation, vec2 orientation, float amp2) { // lo
 
 void main() {
   float dist = distance(uv, finger);
-  float amp2 = pow(1.0 - dist, 0.1); // this is what magnifies the picture
-  float colorSeparation = 0.02 * mix(amp2, 1.0, 0.5); // what does the rgb separation
+  float amp2 = pow(1.0 - dist, 0.2); // this is what magnifies the picture
+  float colorSeparation = 0.02 * mix(amp2, 1.0, 0.9); // what does the rgb separation
   vec2 orientation = vec2(1.0, 0.0);
   gl_FragColor = vec4(
     coloredLookup(colorSeparation, orientation, amp2),

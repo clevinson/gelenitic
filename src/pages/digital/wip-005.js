@@ -5,55 +5,18 @@ import Vignette from "../../components/vignette.js"
 import 'url-search-params-polyfill'
 import ScPlayer from "../../components/sc-player.js"
 
+const PageContainer = styled.div``
+
 const PlayerContainer = styled.div`
   position: absolute;
   width: 100%;
   height: 50px;
   bottom: 0;
-  opacity: 30%;
-`
-
-const PageContainer = styled.div`
-  .back {
-      top: 0px;
-      left: 0px;
-      height: ${props => props.height}px;
-      width: ${props => props.width}px;
-      position: fixed;
-  }
-
-  .overlay {
-      height: 100%;
-      width: 100%;
-      position: fixed;
-      overflow: auto;
-      top: 0px;
-      left: 0px;
-  }
-
-  footer {
-    background-color: rgba(0,0,0,0);
-  }
-
-  li {
-    font-size: 1.5em;
-    line-height: 4em;
-    list-style-type: none;
-    border-bottom: 2px solid black;
-    margin-right: 40px;
-    position: relative;
-  }
-  span {
-    float: right;
-  }
-  iframe {
-    position: fixed;
-  }
 `
 
 const StyledForm = styled.form`
   position: absolute;
-  bottom: 0;
+  top: 0;
   background: rgba(255,255,255,0.8);
   padding: 5px;
   display: none;
@@ -73,20 +36,6 @@ const StyledForm = styled.form`
 
 class CircadiaApp extends React.Component {
 
-  updateWindowDimensions() {
-    this.setState({ width: window.innerWidth, height: window.innerHeight });
-  }
-
-  handleInputChange(event) {
-    const target = event.target;
-    const value = target.value;
-    const name = target.name;
-
-    this.setState({
-      [name]: value
-    });
-  }
-
   constructor (props) {
     super(props);
 
@@ -96,12 +45,12 @@ class CircadiaApp extends React.Component {
       imageNr: 0,
       imageUrl: "",
       distortScale: 1,
-      widget: null
+      widget: null,
+      playerState: {
+        paused: true,
+        playlistIndex: 0,
+      },
     };
-
-    this.handleInputChange = this.handleInputChange.bind(this);
-    this.updateWindowDimensions = this.updateWindowDimensions.bind(this);
-    this.playTrack = this.playTrack.bind(this);
   }
 
   componentWillUnmount() {
@@ -113,45 +62,71 @@ class CircadiaApp extends React.Component {
     window.addEventListener('resize', this.updateWindowDimensions);
   }
 
-
-  playTrack() {
-    this.state.widget.toggle()
-
+  updateWindowDimensions = () => {
+    this.setState({ width: window.innerWidth, height: window.innerHeight });
   }
 
-  getImageUrl() {
-    if (this.state.imageUrl !== "") {
-      return this.state.imageUrl
-    }
-    if (this.state.imageNr >= 1 && this.state.imageNr < 26) {
-      return "/assets/WIP005/" + this.state.imageNr + ".png"
+  playerStateChange = (scPlayer) => {
+    this.setState({
+      playerState: {
+        paused: scPlayer.audio.paused,
+        playlistIndex: scPlayer._playlistIndex,
+      }
+    })
+  }
+
+  handleInputChange = (event) => {
+    const target = event.target;
+    const value = target.value;
+    const name = target.name;
+
+    this.setState({
+      [name]: value
+    });
+  }
+
+  playTrack = () => {
+    this.state.widget.toggle()
+  }
+
+  getImageUrl = () => {
+    if (this.state.playerState.paused) {
+      return "/assets/WIP005/_.png"
     } else {
-      return "/assets/WIP005/circadia-art-full.png"
+      return `/assets/WIP005/_${this.state.playerState.playlistIndex}.png`
+    }
+  }
+
+  getDistortScale = () => {
+    if (this.state.playerState.paused) {
+      return 0.5
+    } else {
+      return 5 + 4.5*Math.sin(Math.random()*3.14)
     }
   }
 
   render () {
-    const {distortScale} = this.state;
+    const {distortScale, width, height, imageNr, imageUrl} = this.state;
 
     return (
-      <PageContainer width={this.state.width} height={this.state.height}>
+      <PageContainer>
         <GlobalStyle/>
-          <Vignette
-            distortScale={distortScale}
-            width={this.state.width}
-            height={this.state.height}
-            source={this.getImageUrl()}
-          />
-          <PlayerContainer>
-            <ScPlayer name="yum"/>
-          </PlayerContainer>
+        <Vignette
+          distortScale={this.getDistortScale()}
+          width={width}
+          height={height}
+          source={this.getImageUrl()}
+        />
+        <PlayerContainer>
+          <ScPlayer onStateChange={this.playerStateChange} />
+        </PlayerContainer>
         <StyledForm>
           <label>
             image selector (0-26):
             <input
               name="imageNr"
               type="number"
-              value={this.state.imageNr}
+              value={imageNr}
               onChange={this.handleInputChange} />
           </label>
           <label>
@@ -159,7 +134,7 @@ class CircadiaApp extends React.Component {
             <input
               name="imageUrl"
               type="text"
-              value={this.state.imageUrl}
+              value={imageUrl}
               onChange={this.handleInputChange} />
           </label>
           <label>
@@ -167,7 +142,7 @@ class CircadiaApp extends React.Component {
             <input
               name="distortScale"
               type="number"
-              value={this.state.distortScale}
+              value={distortScale}
               onChange={this.handleInputChange} />
           </label>
         </StyledForm>
@@ -175,7 +150,5 @@ class CircadiaApp extends React.Component {
     )
   }
 }
-
-
 
 export default CircadiaApp

@@ -4,7 +4,7 @@ import SoundCloudAudio from 'soundcloud-audio'
 
 
 const Player = styled.div`
-  background: #fff;
+  background: rgba(255,255,255,0.85);
   height: 50px;
   display: flex;
   flex-direction: row;
@@ -26,14 +26,17 @@ const PlayControls = styled.div`
     text-align: center;
   }
 
-  .playPause {
-
+  .hidden {
+    color: #999;
+    pointer-events: none;
   }
+
   width: 100px;
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: space-around;
+  user-select: none;
 `
 
 class ScPlayer extends React.Component {
@@ -44,7 +47,6 @@ class ScPlayer extends React.Component {
 
     this.state = {
       player: null,
-      trackTitle: null,
       tracks: null,
       nowPlaying: false,
       playbackStarted: false,
@@ -54,12 +56,28 @@ class ScPlayer extends React.Component {
   componentDidMount() {
     if (typeof document !== `undefined`) {
       let player = new SoundCloudAudio('1796bdbd7f77b6ccf8654cf6fa432669')
+
+      player.on('play', () => { 
+        this.setState({
+          nowPlayeing: true
+        })
+        this.props.onStateChange(player)
+      })
+      player.on('pause', () => {
+        this.props.onStateChange(player)
+        this.setState({
+          nowPlayeing: false
+        })
+      })
+      player.on('ended', () => { this.nextTrack() })
+
       player.resolve("https://soundcloud.com/keptmale/sets/ost-circadia/s-TIzMQ", (playlist) => {
         this.setState({
           player: player,
           trackTitle: playlist.title,
           tracks: playlist.tracks
         })
+        console.log(player)
       })
     }
   }
@@ -90,36 +108,72 @@ class ScPlayer extends React.Component {
     }
   }
 
-  playButtonText = () => {
-    let icon;
-
-    if (this.state.nowPlaying) {
-      icon = "❘❘"
+  nextTrack = () => {
+    if (this.state.player._playlistIndex == this.state.player._playlist.tracks.length - 1) {
+      this.resetPlayback()
+    } else if (this.state.player.audio.paused) {
+      this.state.player._playlistIndex += 1
+      this.setState({player: this.state.player})
     } else {
-      icon = "▷"
+      this.state.player.next().then(() => {
+        this.setState({player: this.state.player})
+      })
     }
-    return icon
-
   }
 
-  nextTrack = () => {
-    this.state.player.next().then(() => {
-      this.setState({trackTitle: this.state.player.track})
-    })
+  prevTrack = () => {
+    if (this.state.player.audio.paused) {
+      this.state.player._playlistIndex -= 1
+      this.setState({player: this.state.player})
+    } else {
+      this.state.player.previous().then(() => {
+        this.setState({player: this.state.player})
+      })
+    }
+  }
 
+  resetPlayback = () => {
+    this.state.player._playlistIndex = 0
+    this.state.player.stop()
+    this.setState({
+      player: this.state.player,
+      nowPlaying: false,
+      playbackStarted: false
+    })
+  }
+
+  // ADD EVENT HANLDER SO IF PLAYBACK STOPS,
+  // WE RESET THE "PLAY/PAUSE" BUTTON
+
+  getPlaylistIndex = () => {
+    if (this.state.player) {
+      return this.state.player._playlistIndex
+    } else {
+      return 0
+    }
+  }
+
+  getClassNames = (buttonName) => {
+    if (!this.state.playbackStarted) {
+      return buttonName + " hidden"
+    } else if (this.getPlaylistIndex() === 0 && buttonName === "prev") {
+      return buttonName + " hidden"
+    } else {
+      return buttonName
+    }
   }
 
   render() {
     return (
       <Player>
-        <PlayControls>
-        <div className="prev" onClick={this.prevTrack}>
+        <PlayControls playlistIndex={this.getPlaylistIndex()} playbackStarted={this.state.playbackStarted} >
+        <div className={this.getClassNames("prev")} onClick={this.prevTrack}>
           ⟨⟨
         </div>
         <div className="playPause" onClick={this.togglePlayback}>
-          {this.playButtonText()}
+          {this.state.nowPlaying ? "❘❘" : "▷"}
         </div>
-        <div className="next" onClick={this.nextTrack}>
+        <div className={this.getClassNames("next")} onClick={this.nextTrack}>
           ⟩⟩
         </div>
         </PlayControls>
