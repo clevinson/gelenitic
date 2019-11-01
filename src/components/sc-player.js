@@ -111,7 +111,7 @@ class ScPlayer extends React.Component {
   nextTrack = () => {
     if (this.state.player._playlistIndex == this.state.player._playlist.tracks.length - 1) {
       this.resetPlayback()
-    } else if (this.state.player.audio.paused) {
+    } else if (!this.state.nowPlaying) {
       this.state.player._playlistIndex += 1
       this.setState({player: this.state.player})
     } else {
