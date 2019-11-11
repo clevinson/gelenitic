@@ -38,20 +38,43 @@ class CircadiaApp extends React.Component {
         paused: true,
         playlistIndex: 0,
       },
+      keyCodesPressed: [],
     };
   }
 
   componentWillUnmount() {
     window.removeEventListener('resize', this.updateWindowDimensions);
+    window.removeEventListener('keydown', this.handleKeyDown)
   }
 
   componentDidMount () {
     this.updateWindowDimensions();
-    window.addEventListener('resize', this.updateWindowDimensions);
+    window.addEventListener('resize', this.updateWindowDimensions)
+    window.addEventListener('keydown', this.handleKeyDown)
   }
 
   updateWindowDimensions = () => {
     this.setState({ width: window.innerWidth, height: window.innerHeight });
+  }
+
+  handleKeyDown = (e) => {
+  // download code
+    var key = e.which;
+
+    this.setState(prevState => {
+      let keyCodesPressed = [...prevState.keyCodesPressed, key]
+      if (keyCodesPressed.length > 4) {
+        keyCodesPressed.splice(0,1)
+      }
+      // 37 = left, 38 = up, 39 = right, 40 = down
+      if (keyCodesPressed[0] === 38 &&
+          keyCodesPressed[1] === 39 &&
+          keyCodesPressed[2] === 40 &&
+          keyCodesPressed[3] === 37) {
+        window.location.href = 'http://waysinnerpass.com/stash/wip-005/Gi%20Gi%20-%20OST%20Circadia%20%282019%29%20%5BWIP-005%5D%20MP3-320.zip';
+      }
+      return {keyCodesPressed: keyCodesPressed}
+    });
   }
 
   playerStateChange = (scPlayer) => {
