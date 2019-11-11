@@ -5,32 +5,20 @@ import Vignette from "../../components/vignette.js"
 import 'url-search-params-polyfill'
 import ScPlayer from "../../components/sc-player.js"
 
-const PageContainer = styled.div``
+const PageContainer = styled.div`
+  body {
+    overflow: hidden;
+  }
+`
 
 const PlayerContainer = styled.div`
   position: absolute;
+  bottom: 0;
   width: 100%;
   height: 50px;
-  bottom: 0;
-`
 
-const StyledForm = styled.form`
-  position: absolute;
-  top: 0;
-  background: rgba(255,255,255,0.8);
-  padding: 5px;
-  display: none;
-  flex-direction: column;
-
-  label {
-    font-size: 1.2em;
-    border-bottom: black 1px solid;
-    line-height: 2.5em;
-  }
-  input {
-    width: 100px;
-    float: right;
-    margin: 5px 0 5px 10px;
+  @media screen and (max-width: 500px) {
+    height: 85px;
   }
 `
 
@@ -99,9 +87,9 @@ class CircadiaApp extends React.Component {
 
   getDistortScale = () => {
     if (this.state.playerState.paused) {
-      return 0.5
+      return 5.5
     } else {
-      return 5 + 4.5*Math.sin(Math.random()*3.14)
+      return 5 + 4.5*Math.sin(Math.random()*2*3.14)
     }
   }
 
@@ -120,32 +108,6 @@ class CircadiaApp extends React.Component {
         <PlayerContainer>
           <ScPlayer onStateChange={this.playerStateChange} />
         </PlayerContainer>
-        <StyledForm>
-          <label>
-            image selector (0-26):
-            <input
-              name="imageNr"
-              type="number"
-              value={imageNr}
-              onChange={this.handleInputChange} />
-          </label>
-          <label>
-            custom image url:
-            <input
-              name="imageUrl"
-              type="text"
-              value={imageUrl}
-              onChange={this.handleInputChange} />
-          </label>
-          <label>
-            Distort Amplifier:
-            <input
-              name="distortScale"
-              type="number"
-              value={distortScale}
-              onChange={this.handleInputChange} />
-          </label>
-        </StyledForm>
       </PageContainer>
     )
   }

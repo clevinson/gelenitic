@@ -4,8 +4,10 @@ import SoundCloudAudio from 'soundcloud-audio'
 
 
 const Player = styled.div`
+
+  height: 100%;
+
   background: rgba(255,255,255,0.85);
-  height: 50px;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -14,6 +16,17 @@ const Player = styled.div`
 
   .playerInfo {
     font-size: 1.3em;
+  }
+
+  @media screen and (max-width: 500px) {
+    flex-direction: column-reverse;
+    justify-content: center;
+    padding: 0 5px 0 5px;
+
+    .playerInfo {
+      font-size: 1em;
+      padding-bottom: 0.3em;
+    }
   }
 
 `
@@ -37,6 +50,12 @@ const PlayControls = styled.div`
   align-items: center;
   justify-content: space-around;
   user-select: none;
+
+  @media screen and (max-width: 500px) {
+    padding-bottom: 1em;
+  }
+
+
 `
 
 class ScPlayer extends React.Component {
@@ -86,7 +105,7 @@ class ScPlayer extends React.Component {
     if (this.state.playbackStarted) {
       let playlistIndex = this.state.player._playlistIndex
       return (
-        this.state.tracks[playlistIndex].title + `   ::: [${playlistIndex+1} of 10]`
+        this.state.tracks[playlistIndex].title + ` ::: [${playlistIndex+1} of 10]`
       )
     } else {
       return "Gi Gi - OST Circadia"
@@ -167,15 +186,15 @@ class ScPlayer extends React.Component {
     return (
       <Player>
         <PlayControls playlistIndex={this.getPlaylistIndex()} playbackStarted={this.state.playbackStarted} >
-        <div className={this.getClassNames("prev")} onClick={this.prevTrack}>
-          ⟨⟨
-        </div>
-        <div className="playPause" onClick={this.togglePlayback}>
-          {this.state.nowPlaying ? "❘❘" : "▷"}
-        </div>
-        <div className={this.getClassNames("next")} onClick={this.nextTrack}>
-          ⟩⟩
-        </div>
+          <div className={this.getClassNames("prev")} onClick={this.prevTrack}>
+            ⟨⟨
+          </div>
+          <div className="playPause" onClick={this.togglePlayback}>
+            {this.state.nowPlaying ? "❘❘" : "▷"}
+          </div>
+          <div className={this.getClassNames("next")} onClick={this.nextTrack}>
+            ⟩⟩
+          </div>
         </PlayControls>
         <p className="playerInfo">{this.playerInfo()}</p>
       </Player>
