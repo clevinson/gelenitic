@@ -30,10 +30,6 @@ class CircadiaApp extends React.Component {
     this.state = {
       width: 0,
       height: 0,
-      imageNr: 0,
-      imageUrl: "",
-      distortScale: 1,
-      widget: null,
       playerState: {
         paused: true,
         playlistIndex: 0,
@@ -117,7 +113,7 @@ class CircadiaApp extends React.Component {
   }
 
   render () {
-    const {distortScale, width, height, imageNr, imageUrl} = this.state;
+    const {width, height} = this.state;
 
     return (
       <PageContainer>

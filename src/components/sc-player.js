@@ -78,15 +78,15 @@ class ScPlayer extends React.Component {
 
       player.on('play', () => { 
         this.setState({
-          nowPlayeing: true
+          nowPlaying: true
         })
         this.props.onStateChange(player)
       })
       player.on('pause', () => {
-        this.props.onStateChange(player)
         this.setState({
-          nowPlayeing: false
+          nowPlaying: false
         })
+        this.props.onStateChange(player)
       })
       player.on('ended', () => { this.nextTrack() })
 
@@ -96,7 +96,6 @@ class ScPlayer extends React.Component {
           trackTitle: playlist.title,
           tracks: playlist.tracks
         })
-        console.log(player)
       })
     }
   }
@@ -128,11 +127,13 @@ class ScPlayer extends React.Component {
   }
 
   nextTrack = () => {
-    if (this.state.player._playlistIndex == this.state.player._playlist.tracks.length - 1) {
+    if (this.state.player._playlistIndex === this.state.player._playlist.tracks.length - 1) {
       this.resetPlayback()
     } else if (!this.state.nowPlaying) {
-      this.state.player._playlistIndex += 1
-      this.setState({player: this.state.player})
+      this.setState(prevState => {
+        prevState.player._playlistIndex += 1
+        return {player: prevState.player}
+      })
     } else {
       this.state.player.next().then(() => {
         this.setState({player: this.state.player})
@@ -142,8 +143,10 @@ class ScPlayer extends React.Component {
 
   prevTrack = () => {
     if (this.state.player.audio.paused) {
-      this.state.player._playlistIndex -= 1
-      this.setState({player: this.state.player})
+      this.setState(prevState => {
+        prevState.player._playlistIndex -= 1
+        return {player: prevState.player}
+      })
     } else {
       this.state.player.previous().then(() => {
         this.setState({player: this.state.player})
@@ -152,12 +155,14 @@ class ScPlayer extends React.Component {
   }
 
   resetPlayback = () => {
-    this.state.player._playlistIndex = 0
-    this.state.player.stop()
-    this.setState({
-      player: this.state.player,
-      nowPlaying: false,
-      playbackStarted: false
+    this.setState(prevState => {
+      prevState.player._playlistIndex = 0
+      prevState.player.stop()
+      return {
+        player: prevState.player,
+        nowPlaying: false,
+        playbackStarted: false
+      }
     })
   }
 
