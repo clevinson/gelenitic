@@ -9,6 +9,12 @@ const PageContainer = styled.div`
   body {
     overflow: hidden;
   }
+
+  // makes Vignette wrapper the correct height (prevents otherwise
+  // scrolling behavior due to display: inline-block)
+  span {
+    vertical-align: top;
+  }
 `
 
 const PlayerContainer = styled.div`
@@ -117,7 +123,7 @@ class CircadiaApp extends React.Component {
 
     return (
       <PageContainer>
-        <GlobalStyle/>
+        <GlobalStyle addlBodyStyle="overflow: hidden;"/>
         <Vignette
           distortScale={this.getDistortScale()}
           width={width}

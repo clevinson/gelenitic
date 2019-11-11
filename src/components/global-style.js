@@ -6,6 +6,7 @@ const GlobalStyle = createGlobalStyle`
     font-size: 10px;
     text-transform: lowercase;
     margin: 0;
+    ${props => props.addlBodyStyle}
   }
 
   h2 { /* 24px / 26px + 16px / 16px */
