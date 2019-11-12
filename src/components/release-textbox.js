@@ -1,5 +1,5 @@
 import React from "react"
-import {Link, Slink, Sa} from "./link"
+import {Slink, Sa} from "./link"
 import styled from "styled-components"
 import {SmallMediaQuery} from "../global-variables"
 import Draggable from "../components/draggable"
@@ -204,7 +204,7 @@ class PurchaseButton extends React.Component {
 
     this.setState(prevState => ({
       showPurchaseOptions: !prevState.showPurchaseOptions,
-      selectorClass: (prevState.selectorClass == "clicked" ? "" : "clicked")
+      selectorClass: (prevState.selectorClass === "clicked" ? "" : "clicked")
     }))
 
   }
@@ -212,7 +212,7 @@ class PurchaseButton extends React.Component {
   render() {
     if (this.props.soldOut) {
       return <SoldOutButton>sold out</SoldOutButton>
-    } else if (this.props.purchaseLinks.length == 1) {
+    } else if (this.props.purchaseLinks.length === 1) {
       let link = this.props.purchaseLinks[0]
 
       return <SingleButton href={link.url} target="_blank">{link.label}</SingleButton>
