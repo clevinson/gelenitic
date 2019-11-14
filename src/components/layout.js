@@ -78,7 +78,7 @@ export default ({ hideFooter, children }) => (
         <Flank>
         <NavLinks>
           <Slink to="/about">about</Slink>
-          <Slink href="//twitter.com/waysinnerpass" rel="noopener noreferrer" target="_blank">twitter</Slink>
+          <Slink href="//waysinnerpass.bandcamp.com/" rel="noopener noreferrer" target="_blank">bandcamp</Slink>
           <Slink href="//soundcloud.com/waysinnerpass" rel="noopener noreferrer" target="_blank">soundcloud</Slink>
         </NavLinks>
         </Flank>
