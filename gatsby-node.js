@@ -3,10 +3,7 @@ const path = require(`path`);
 
 exports.onCreateNode = ({ node, getNode, actions }) => {
   const { createNodeField } = actions;
-  if (
-    node.internal.type === `MarkdownRemark` ||
-    node.internal.type === `allMarkdownRemark`
-  ) {
+  if (node.internal.type === `MarkdownRemark`) {
     const slug =
       "/physical" + createFilePath({ node, getNode, basePath: `releases` });
     createNodeField({
