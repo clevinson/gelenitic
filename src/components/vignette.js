@@ -57,70 +57,76 @@ void main() {
     //texture2D(texture, lookup(vec2(0.0), amp2)).b),
     1.);
 }
-`
-  }
+`,
+  },
 });
 
-
 class Vignette extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props);
     this.onMouseMove = this.onMouseMove.bind(this);
     this.state = {
       finger: [0.5, 0.5],
       time: 0.02,
       frames: 1,
+      isMounted: false,
     };
   }
 
-  onMouseMove (evt) {
+  onMouseMove(evt) {
+    if (!this.state.isMounted) return;
+
     const { width, height } = this.props;
     const { clientX, clientY } = evt;
-    const { left, top } = ReactDOM.findDOMNode(this.refs.view).getBoundingClientRect();
-    const [x, y] = [
-      clientX - left,
-      clientY - top
-    ];
-    this.setState({ finger: [x/width, 1-y/height] });
+    const { left, top } = ReactDOM.findDOMNode(
+      this.refs.view
+    ).getBoundingClientRect();
+    const [x, y] = [clientX - left, clientY - top];
+    this.setState({ finger: [x / width, 1 - y / height] });
   }
 
-  componentDidMount () {
+  componentDidMount() {
+    this.setState({ isMounted: true });
     let startTime;
-    const loop = t => {
+
+    const loop = (t) => {
       requestAnimationFrame(loop);
       if (!startTime) startTime = t;
       const time = (t - startTime) / 1000;
-      this.setState({ time: time, frames: this.state.frames+1 });
+      this.setState({ time: time, frames: this.state.frames + 1 });
     };
     requestAnimationFrame(loop);
   }
 
-
-  render () {
+  render() {
     const { width, height, source, distortScale } = this.props;
     const { finger, time } = this.state;
     let ampScale = distortScale || 1;
-    return <Surface
-      ref="view"
-      width={width}
-      height={height}
-      backgroundcolor="transparent"
-      onMouseMove={this.onMouseMove}
-      onLoad={() => console.log("Vignette onLoad")}
-      onProgress={p => console.log("Vignette onProgress", p)}
+    return (
+      <Surface
+        ref="view"
+        width={width}
+        height={height}
+        backgroundcolor="transparent"
+        onMouseMove={this.onMouseMove}
+        onLoad={() => console.log("Vignette onLoad")}
+        onProgress={(p) => console.log("Vignette onProgress", p)}
       >
-      <GL.Node
-        shader={shaders.imageVignette}
-        uniforms={{
-          time: time,
-          freq: 10 + 1 * Math.sin(0.7*time),
-          texture: source,
-          amp: ampScale*(0.001 + Math.max(0, 0.0005 + 0.0005*Math.cos(time))),
-          moving: 0,
-          finger: finger
-        }}
-      />
-    </Surface>;
+        <GL.Node
+          shader={shaders.imageVignette}
+          uniforms={{
+            time: time,
+            freq: 10 + 1 * Math.sin(0.7 * time),
+            texture: source,
+            amp:
+              ampScale *
+              (0.001 + Math.max(0, 0.0005 + 0.0005 * Math.cos(time))),
+            moving: 0,
+            finger: finger,
+          }}
+        />
+      </Surface>
+    );
   }
 }
 

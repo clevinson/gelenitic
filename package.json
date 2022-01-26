@@ -21,6 +21,7 @@
     "gatsby-transformer-remark": "^5.6.0",
     "gl-react": "^5.0.0",
     "gl-react-dom": "^5.1.0",
+    "howler": "^2.2.3",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-draggable": "^4.4.4",
