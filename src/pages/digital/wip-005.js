@@ -83,12 +83,12 @@ class CircadiaApp extends React.Component {
   };
 
   playerStateChange = (scPlayer) => {
-    this.setState({
-      playerState: {
-        paused: scPlayer.audio.paused,
-        playlistIndex: scPlayer._playlistIndex,
-      },
-    });
+    // this.setState({
+    //   playerState: {
+    //     paused: scPlayer.audio.paused,
+    //     playlistIndex: scPlayer._playlistIndex,
+    //   },
+    // });
   };
 
   handleInputChange = (event) => {

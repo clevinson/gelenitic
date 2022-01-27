@@ -41,8 +41,7 @@ const PlayControls = styled.div`
   }
 
   .hidden {
-    color: #999;
-    pointer-events: none;
+    color: #999 !important;
   }
 
   width: 100px;
@@ -58,7 +57,6 @@ const PlayControls = styled.div`
 `;
 
 // TODO: Get this from audio CMS
-const PLAYLIST_LEN = 10;
 const PLAYLIST = [
   {
     title: "Track 1",
@@ -77,7 +75,7 @@ class ScPlayer extends React.Component {
     this.state = {
       player: null,
       trackIndex: 0,
-      tracks: PLAYLIST,
+      playlist: PLAYLIST,
       nowPlaying: false,
       playbackStarted: false,
     };
@@ -86,24 +84,24 @@ class ScPlayer extends React.Component {
   componentDidMount() {
     if (typeof document !== `undefined`) {
       const firstTrack = new Howl({
-        src: [this.state.tracks[0].src],
+        src: [this.state.playlist[0].src],
       });
 
-      sound.on("play", () => {
-        this.setState({
-          nowPlaying: true,
-        });
-        this.props.onStateChange(player);
-      });
-      sound.on("pause", () => {
-        this.setState({
-          nowPlaying: false,
-        });
-        this.props.onStateChange(player);
-      });
-      sound.on("end", () => {
-        this.nextTrack();
-      });
+      // sound.on("play", () => {
+      //   this.setState({
+      //     nowPlaying: true,
+      //   });
+      //   this.props.onStateChange(player);
+      // });
+      // sound.on("pause", () => {
+      //   this.setState({
+      //     nowPlaying: false,
+      //   });
+      //   this.props.onStateChange(player);
+      // });
+      // sound.on("end", () => {
+      //   this.nextTrack();
+      // });
 
       // this.setState({
       //   trackTitle:
@@ -123,85 +121,78 @@ class ScPlayer extends React.Component {
   }
 
   playerInfo = () => {
-    if (this.state.playbackStarted) {
-      let playlistIndex = this.getPlaylistIndex();
-      return (
-        this.state.tracks[playlistIndex].title +
-        ` ::: [${playlistIndex + 1} of 10]`
-      );
+    const { playbackStarted, playlist, trackIndex } = this.state;
+
+    if (playbackStarted) {
+      return playlist[trackIndex].title + ` ::: [${trackIndex + 1} of 10]`;
     } else {
       return "Gi Gi - OST Circadia";
     }
   };
 
   togglePlayback = () => {
-    if (this.state.nowPlaying) {
-      // this.state.player.pause();
-      this.setState({
-        nowPlaying: false,
-      });
-    } else {
-      this.setState({
-        nowPlaying: true,
-        playbackStarted: true,
-      });
-      // this.state.player.play();
-    }
+    const { playlist, trackIndex } = this.state;
+
+    if (playlist[trackIndex])
+      if (this.state.nowPlaying) {
+        // this.state.player.pause();
+        this.setState({
+          nowPlaying: false,
+        });
+      } else {
+        this.setState({
+          nowPlaying: true,
+          playbackStarted: true,
+        });
+        // this.state.player.play();
+      }
   };
 
   nextTrack = () => {
-    if (this.getPlaylistIndex() === PLAYLIST_LEN - 1) {
+    const { playlist, trackIndex } = this.state;
+
+    if (trackIndex === playlist.length - 1) {
       this.resetPlayback();
-    } else if (!this.state.nowPlaying) {
-      this.setState((prevState) => {
-        prevState.player._playlistIndex += 1;
-        return { player: prevState.player };
-      });
     } else {
-      this.state.player.next().then(() => {
-        this.setState({ player: this.state.player });
-      });
+      this.setState((prevState) => ({ trackIndex: prevState.trackIndex + 1 }));
     }
   };
 
   prevTrack = () => {
-    if (this.state.player.audio.paused) {
-      this.setState((prevState) => {
-        prevState.player._playlistIndex -= 1;
-        return { player: prevState.player };
-      });
-    } else {
-      this.state.player.previous().then(() => {
-        this.setState({ player: this.state.player });
-      });
+    if (this.state.trackIndex > 0) {
+      this.setState((prevState) => ({ trackIndex: prevState.trackIndex - 1 }));
     }
   };
 
   resetPlayback = () => {
-    this.setState((prevState) => {
-      prevState.player._playlistIndex = 0;
-      prevState.player.stop();
-      return {
-        player: prevState.player,
-        nowPlaying: false,
-        playbackStarted: false,
-      };
-    });
+    this.setState((prevState) => ({
+      trackIndex: 0,
+      nowPlaying: false,
+      playbackStarted: false,
+    }));
   };
 
   // ADD EVENT HANLDER SO IF PLAYBACK STOPS,
   // WE RESET THE "PLAY/PAUSE" BUTTON
 
-  getPlaylistIndex = () => {
-    return this.state.trackIndex;
-  };
-
   getClassNames = (buttonName) => {
-    if (!this.state.playbackStarted) {
+    const { playbackStarted, trackIndex } = this.state;
+
+    if (!playbackStarted) {
+      if (buttonName === "prev") {
+        console.log("hiding prev");
+      }
       return buttonName + " hidden";
-    } else if (this.getPlaylistIndex() === 0 && buttonName === "prev") {
+    } else if (trackIndex === 0 && buttonName === "prev") {
+      if (buttonName === "prev") {
+        console.log("hiding prev");
+      }
       return buttonName + " hidden";
     } else {
+      if (buttonName === "prev") {
+        console.log("should not be hiding prev");
+      }
+
       return buttonName;
     }
   };
@@ -209,10 +200,7 @@ class ScPlayer extends React.Component {
   render() {
     return (
       <Player>
-        <PlayControls
-          playlistIndex={this.getPlaylistIndex()}
-          playbackStarted={this.state.playbackStarted}
-        >
+        <PlayControls>
           <div className={this.getClassNames("prev")} onClick={this.prevTrack}>
             ⟨⟨
           </div>
