@@ -78,53 +78,67 @@ class ScPlayer extends React.Component {
       playlist: PLAYLIST,
       nowPlaying: false,
       playbackStarted: false,
+      currentTrack: null,
     };
   }
 
-  componentDidMount() {
-    if (typeof document !== `undefined`) {
-      const firstTrack = new Howl({
-        src: [this.state.playlist[0].src],
+  play = (index) => {
+    const { playlist, trackIndex, playbackStarted } = this.state;
+
+    let sound;
+
+    if (playlist[index].howl) {
+      sound = playlist[index].howl;
+    } else {
+      sound = new Howl({
+        src: [this.state.playlist[index].src],
       });
 
-      // sound.on("play", () => {
-      //   this.setState({
-      //     nowPlaying: true,
-      //   });
-      //   this.props.onStateChange(player);
-      // });
-      // sound.on("pause", () => {
-      //   this.setState({
-      //     nowPlaying: false,
-      //   });
-      //   this.props.onStateChange(player);
-      // });
-      // sound.on("end", () => {
-      //   this.nextTrack();
-      // });
+      sound.on("play", () => {
+        this.setState({
+          nowPlaying: true,
+        });
+        this.props.onStateChange({ paused: false, trackIndex: index });
+      });
 
-      // this.setState({
-      //   trackTitle:
-      // })
+      sound.on("pause", () => {
+        this.setState({
+          nowPlaying: false,
+        });
+        this.props.onStateChange({ paused: true, trackIndex: index });
+      });
 
-      // player.resolve(
-      //   "https://soundcloud.com/keptmale/sets/ost-circadia/s-TIzMQ",
-      //   (playlist) => {
-      //     this.setState({
-      //       player: player,
-      //       trackTitle: playlist.title,
-      //       tracks: playlist.tracks,
-      //     });
-      //   }
-      // );
+      sound.on("stop", () => {
+        this.setState({ nowPlaying: false });
+        this.props.onStateChange({ paused: true, trackIndex: index });
+      });
+
+      sound.on("end", () => {
+        this.nextTrack();
+      });
+
+      // Update playlist
+      const newPlaylist = [...playlist];
+      newPlaylist[index] = { ...playlist[index], howl: sound };
+
+      this.setState({
+        playlist: newPlaylist,
+      });
     }
-  }
 
-  playerInfo = () => {
-    const { playbackStarted, playlist, trackIndex } = this.state;
+    sound.play();
+
+    this.setState(() => ({
+      trackIndex: index,
+      playbackStarted: true,
+    }));
+  };
+
+  playerInfo = (title, index) => {
+    const { playbackStarted } = this.state;
 
     if (playbackStarted) {
-      return playlist[trackIndex].title + ` ::: [${trackIndex + 1} of 10]`;
+      return title + ` ::: [${index + 1} of 10]`;
     } else {
       return "Gi Gi - OST Circadia";
     }
@@ -133,42 +147,60 @@ class ScPlayer extends React.Component {
   togglePlayback = () => {
     const { playlist, trackIndex } = this.state;
 
-    if (playlist[trackIndex])
-      if (this.state.nowPlaying) {
-        // this.state.player.pause();
-        this.setState({
-          nowPlaying: false,
-        });
-      } else {
-        this.setState({
-          nowPlaying: true,
-          playbackStarted: true,
-        });
-        // this.state.player.play();
-      }
+    const sound = playlist[trackIndex].howl;
+
+    if (sound?.playing()) {
+      sound.pause();
+    } else {
+      this.play(trackIndex);
+      this.setState({
+        playbackStarted: true,
+      });
+    }
+  };
+
+  stop = () => {
+    const { playlist, trackIndex } = this.state;
+
+    const sound = playlist[trackIndex].howl;
+    if (sound) {
+      sound.stop();
+    }
+  };
+
+  skipTo = (index) => {
+    this.stop();
+    this.play(index);
   };
 
   nextTrack = () => {
-    const { playlist, trackIndex } = this.state;
+    const { playlist, trackIndex, playbackStarted } = this.state;
+
+    if (!playbackStarted) return;
 
     if (trackIndex === playlist.length - 1) {
       this.resetPlayback();
     } else {
-      this.setState((prevState) => ({ trackIndex: prevState.trackIndex + 1 }));
+      const index = trackIndex + 1;
+      this.skipTo(index);
     }
   };
 
   prevTrack = () => {
     if (this.state.trackIndex > 0) {
-      this.setState((prevState) => ({ trackIndex: prevState.trackIndex - 1 }));
+      const index = this.state.trackIndex - 1;
+      this.skipTo(index);
     }
   };
 
   resetPlayback = () => {
+    this.stop();
+
     this.setState((prevState) => ({
       trackIndex: 0,
       nowPlaying: false,
       playbackStarted: false,
+      currentTrack: null,
     }));
   };
 
@@ -176,28 +208,16 @@ class ScPlayer extends React.Component {
   // WE RESET THE "PLAY/PAUSE" BUTTON
 
   getClassNames = (buttonName) => {
-    const { playbackStarted, trackIndex } = this.state;
+    const { playbackStarted, trackIndex, playlist } = this.state;
 
-    if (!playbackStarted) {
-      if (buttonName === "prev") {
-        console.log("hiding prev");
-      }
-      return buttonName + " hidden";
-    } else if (trackIndex === 0 && buttonName === "prev") {
-      if (buttonName === "prev") {
-        console.log("hiding prev");
-      }
-      return buttonName + " hidden";
-    } else {
-      if (buttonName === "prev") {
-        console.log("should not be hiding prev");
-      }
-
-      return buttonName;
-    }
+    return !playbackStarted || (trackIndex === 0 && buttonName === "prev")
+      ? buttonName + " hidden"
+      : buttonName;
   };
 
   render() {
+    const { trackIndex, playlist } = this.state;
+
     return (
       <Player>
         <PlayControls>
@@ -211,8 +231,9 @@ class ScPlayer extends React.Component {
             ⟩⟩
           </div>
         </PlayControls>
-        <p className="playerInfo">{this.playerInfo()}</p>
-        <p>track: {this.state.trackIndex}</p>
+        <p className="playerInfo">
+          {this.playerInfo(playlist[trackIndex].title, trackIndex)}
+        </p>
       </Player>
     );
   }

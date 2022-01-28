@@ -37,7 +37,7 @@ class CircadiaApp extends React.Component {
       height: 0,
       playerState: {
         paused: true,
-        playlistIndex: 0,
+        trackIndex: 0,
       },
       keyCodesPressed: [],
     };
@@ -49,7 +49,6 @@ class CircadiaApp extends React.Component {
   }
 
   componentDidMount() {
-    console.log("hji");
     this.updateWindowDimensions();
     window.addEventListener("resize", this.updateWindowDimensions);
     window.addEventListener("keydown", this.handleKeyDown);
@@ -82,13 +81,10 @@ class CircadiaApp extends React.Component {
     });
   };
 
-  playerStateChange = (scPlayer) => {
-    // this.setState({
-    //   playerState: {
-    //     paused: scPlayer.audio.paused,
-    //     playlistIndex: scPlayer._playlistIndex,
-    //   },
-    // });
+  playerStateChange = (playerState) => {
+    this.setState({
+      playerState,
+    });
   };
 
   handleInputChange = (event) => {
@@ -109,7 +105,7 @@ class CircadiaApp extends React.Component {
     if (this.state.playerState.paused) {
       return "/assets/WIP005/_.png";
     } else {
-      return `/assets/WIP005/_${this.state.playerState.playlistIndex}.png`;
+      return `/assets/WIP005/_${this.state.playerState.trackIndex}.png`;
     }
   };
 
