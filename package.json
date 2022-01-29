@@ -27,7 +27,6 @@
     "react-draggable": "^4.4.4",
     "react-helmet": "^6.1.0",
     "react-responsive": "^9.0.0-beta.6",
-    "soundcloud-audio": "^1.4.0",
     "styled-components": "^5.3.3",
     "url-search-params-polyfill": "^8.1.1"
   }

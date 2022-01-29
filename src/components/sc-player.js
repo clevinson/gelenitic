@@ -1,6 +1,5 @@
 import React from "react";
 import styled from "styled-components";
-import SoundCloudAudio from "soundcloud-audio";
 import { Howl } from "howler";
 
 const Player = styled.div`
@@ -78,12 +77,11 @@ class ScPlayer extends React.Component {
       playlist: PLAYLIST,
       nowPlaying: false,
       playbackStarted: false,
-      currentTrack: null,
     };
   }
 
   play = (index) => {
-    const { playlist, trackIndex, playbackStarted } = this.state;
+    const { playlist } = this.state;
 
     let sound;
 
@@ -153,9 +151,6 @@ class ScPlayer extends React.Component {
       sound.pause();
     } else {
       this.play(trackIndex);
-      this.setState({
-        playbackStarted: true,
-      });
     }
   };
 
@@ -196,19 +191,18 @@ class ScPlayer extends React.Component {
   resetPlayback = () => {
     this.stop();
 
-    this.setState((prevState) => ({
+    this.setState({
       trackIndex: 0,
       nowPlaying: false,
       playbackStarted: false,
-      currentTrack: null,
-    }));
+    });
   };
 
   // ADD EVENT HANLDER SO IF PLAYBACK STOPS,
   // WE RESET THE "PLAY/PAUSE" BUTTON
 
   getClassNames = (buttonName) => {
-    const { playbackStarted, trackIndex, playlist } = this.state;
+    const { playbackStarted, trackIndex } = this.state;
 
     return !playbackStarted || (trackIndex === 0 && buttonName === "prev")
       ? buttonName + " hidden"
