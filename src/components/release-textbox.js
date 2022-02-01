@@ -1,22 +1,24 @@
-import React from "react"
-import {Slink, Sa} from "./link"
-import styled from "styled-components"
-import {SmallMediaQuery} from "../global-variables"
-import Draggable from "../components/draggable"
+import React from "react";
+import { Slink, Sa } from "./link";
+import styled from "styled-components";
+import { SmallMediaQuery } from "../global-variables";
+import Draggable from "../components/draggable";
 
 const ReleaseTextBox = styled.div`
   padding: 11px;
   background-color: #fff;
   box-sizing: border-box;
 
-  width: ${props => props.width};
+  width: ${(props) => props.width};
   position: absolute;
-  left: ${props => props.x};
-  top: ${props => props.y};
+  left: ${(props) => props.x};
+  top: ${(props) => props.y};
 
   transition: opacity 0.5s linear;
 
-  ${props => props.hideContent && `
+  ${(props) =>
+    props.hideContent &&
+    `
     opacity: 0;
     pointer-events: none;
   `}
@@ -25,16 +27,16 @@ const ReleaseTextBox = styled.div`
     position: static;
     width: 100%;
   }
-`
+`;
 
 const LineHeader = styled.h2`
   margin-top: 0;
-`
+`;
 
 const LineText = styled.div`
   margin-top: 0px;
   margin-bottom: 10px;
-`
+`;
 
 const TracklistContainer = styled.div`
   display: flex;
@@ -46,15 +48,15 @@ const TracklistContainer = styled.div`
     margin-right: 25px;
     list-style-type: none;
   }
-`
+`;
 const TrackListItem = styled.li`
   margin-bottom: 0.75em;
-`
+`;
 
 const SideName = styled.li`
   margin-bottom: 1.5em;
   font-weight: bold;
-`
+`;
 
 const Description = styled.div`
   line-height: 1em
@@ -69,7 +71,7 @@ const Description = styled.div`
     font-family: 'ocr_bregular',Monaco,monospace;
     text-transform: uppercase;
   }
-`
+`;
 
 const ButtonContainer = styled.div`
   display: flex;
@@ -81,7 +83,7 @@ const ButtonContainer = styled.div`
   div:last-child {
     margin-right: 0px;
   }
-`
+`;
 
 const SingleButton = styled(Sa)`
   :hover {
@@ -99,15 +101,16 @@ const SingleButton = styled(Sa)`
   width: 100%;
   margin: 0 5px;
   position: relative;
-`
+`;
 
 const MultiButton = styled.div`
-
   :not(:hover) {
     transition: all 0.3s;
   }
 
-  .clicked, .clicked:hover { /* for 'buy from retailers' button */
+  .clicked,
+  .clicked:hover {
+    /* for 'buy from retailers' button */
     opacity: 1;
     color: #fff;
     background-color: #000;
@@ -117,7 +120,6 @@ const MultiButton = styled.div`
 
   position: relative;
   width: 100%;
-
 
   a {
     text-align: center;
@@ -138,9 +140,8 @@ const MultiButton = styled.div`
   }
 
   ul {
-
     transition: all 0.5s;
-    opacity: ${props => props.showPurchaseOptions ? 1 : 0};
+    opacity: ${(props) => (props.showPurchaseOptions ? 1 : 0)};
     margin: 0;
     top: 100%;
     position: absolute;
@@ -158,7 +159,7 @@ const MultiButton = styled.div`
       cursor: pointer;
     }
   }
-`
+`;
 
 const SoldOutButton = styled.div`
   box-sizing: border-box;
@@ -171,79 +172,109 @@ const SoldOutButton = styled.div`
   color: white;
   background-color: black;
   text-transform: uppercase;
-`
+`;
 
 function Tracklist(props) {
   return (
     <TracklistContainer>
       {Object.keys(props.tracklist).map((sideName, i) => {
-        return <ul key={i}>
-          <SideName >{sideName}</SideName>
-          { props.tracklist[sideName].map((trackName, j) => {
-            return (<TrackListItem key={j}>{trackName}</TrackListItem>)
-          })}
-        </ul>
+        return (
+          <ul key={i}>
+            <SideName>{sideName}</SideName>
+            {props.tracklist[sideName].map((trackName, j) => {
+              return <TrackListItem key={j}>{trackName}</TrackListItem>;
+            })}
+          </ul>
+        );
       })}
     </TracklistContainer>
-  )
+  );
 }
 
-
 class PurchaseButton extends React.Component {
-
   constructor(props) {
     super(props);
     this.state = {
       showPurchaseOptions: false,
-      selectorClass: ""
+      selectorClass: "",
     };
   }
 
   handleClick = (e) => {
-    e.preventDefault()
+    e.preventDefault();
 
-    this.setState(prevState => ({
+    this.setState((prevState) => ({
       showPurchaseOptions: !prevState.showPurchaseOptions,
-      selectorClass: (prevState.selectorClass === "clicked" ? "" : "clicked")
-    }))
-
-  }
+      selectorClass: prevState.selectorClass === "clicked" ? "" : "clicked",
+    }));
+  };
 
   render() {
     if (this.props.soldOut) {
-      return <SoldOutButton>sold out</SoldOutButton>
+      return <SoldOutButton>sold out</SoldOutButton>;
     } else if (this.props.purchaseLinks.length === 1) {
-      let link = this.props.purchaseLinks[0]
+      let link = this.props.purchaseLinks[0];
 
-      return <SingleButton href={link.url} target="_blank">{link.label}</SingleButton>
+      return (
+        <SingleButton href={link.url} target="_blank">
+          {link.label}
+        </SingleButton>
+      );
     } else {
       return (
-        <MultiButton showPurchaseOptions={this.state.showPurchaseOptions} >
-          <Slink as="a" className={"options-selector " + this.state.selectorClass} href="#" onClick={this.handleClick} >Buy</Slink>
-            <ul>
-              { this.props.purchaseLinks.map((link, i) => (
-                <li key={i}><Slink as="a" target="_blank" href={link.url}>{link.label}</Slink></li>
-              ))}
-            </ul>
+        <MultiButton showPurchaseOptions={this.state.showPurchaseOptions}>
+          <Slink
+            as="a"
+            className={"options-selector " + this.state.selectorClass}
+            href="#"
+            onClick={this.handleClick}
+          >
+            Buy
+          </Slink>
+          <ul>
+            {this.props.purchaseLinks.map((link, i) => (
+              <li key={i}>
+                <Slink as="a" target="_blank" href={link.url}>
+                  {link.label}
+                </Slink>
+              </li>
+            ))}
+          </ul>
         </MultiButton>
-      )
+      );
     }
   }
 }
 
-export default ({data, ...other }) => (
-  <Draggable>
-    <ReleaseTextBox width={ data.width } x={ data.position.x } y={ data.position.y } {...other}>
-      <LineHeader>{ data.artist }</LineHeader>
-      <LineHeader>{ data.title }</LineHeader>
-      <LineText>{ data.metadata_date }</LineText>
-      <LineText>{ data.cat_no }</LineText>
-      <Tracklist tracklist={data.tracklist}/>
-      <Description dangerouslySetInnerHTML={{ __html: data.description }}/>
-      <ButtonContainer>
-        <SingleButton target="_blank" href={"/digital/" + data.cat_no + "/"}>listen</SingleButton>
-        <PurchaseButton soldOut={data.sold_out} purchaseLinks={data.purchase_links}/>
-      </ButtonContainer>
-    </ReleaseTextBox>
-  </Draggable>
-)
+export default ({ data, ...other }) => {
+  let listen_url = data.bandcamp_url
+    ? data.bandcamp_url
+    : "/digital/" + data.cat_no + "/";
+
+  return (
+    <Draggable>
+      <ReleaseTextBox
+        width={data.width}
+        x={data.position.x}
+        y={data.position.y}
+        {...other}
+      >
+        <LineHeader>{data.artist}</LineHeader>
+        <LineHeader>{data.title}</LineHeader>
+        <LineText>{data.metadata_date}</LineText>
+        <LineText>{data.cat_no}</LineText>
+        <Tracklist tracklist={data.tracklist} />
+        <Description dangerouslySetInnerHTML={{ __html: data.description }} />
+        <ButtonContainer>
+          <SingleButton target="_blank" href={listen_url}>
+            {data.bandcamp_url ? "bandcamp" : "listen"}
+          </SingleButton>
+          <PurchaseButton
+            soldOut={data.sold_out}
+            purchaseLinks={data.purchase_links}
+          />
+        </ButtonContainer>
+      </ReleaseTextBox>
+    </Draggable>
+  );
+};
