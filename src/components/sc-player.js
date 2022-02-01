@@ -1,6 +1,8 @@
 import React from "react";
 import styled from "styled-components";
 import { Howl } from "howler";
+import AWS from "aws-sdk";
+import YAML from "yaml";
 
 const Player = styled.div`
   height: 100%;
@@ -55,17 +57,60 @@ const PlayControls = styled.div`
   }
 `;
 
-// TODO: Get this from audio CMS
-const PLAYLIST = [
-  {
-    title: "Track 1",
-    src: "https://cdn.sanity.io/files/k4snbik8/production/beefe4f79e46106303ff8acc73bf766ab004ec4d.mp3",
-  },
-  {
-    title: "Track 2",
-    src: "https://cdn.sanity.io/files/k4snbik8/production/0ce89d65cdd580a467bb3841503919def85a4728.mp3",
-  },
-];
+const s3PlaylistTracks = async (playlistDir) => {
+  const bucketName = "wip-static";
+  // Initialize the Amazon Cognito credentials provider
+  AWS.config.region = "us-east-1"; // Region
+  AWS.config.credentials = new AWS.CognitoIdentityCredentials({
+    IdentityPoolId: process.env.GATSBY_AWS_POOL_ID,
+  });
+
+  // Create a new service object
+  let s3 = new AWS.S3({
+    apiVersion: "2006-03-01",
+    params: { Bucket: bucketName },
+  });
+
+  var playlistKey = "stream/" + encodeURIComponent(playlistDir) + "/";
+
+  console.log("Listing items for: " + playlistKey);
+  try {
+    let s3Objects = await s3
+      .listObjectsV2({ Delimiter: "/", Prefix: playlistKey })
+      .promise();
+
+    let bucketUrl = `https://${bucketName}.s3.amazonaws.com/`;
+
+    let metadataKey = playlistKey + "metadata.yml";
+    let response = await fetch(bucketUrl + metadataKey);
+    let metadataRaw = await response.text();
+
+    console.log(metadataRaw);
+    let metadata = YAML.parse(metadataRaw);
+
+    let trackUrls = [];
+    s3Objects.Contents.forEach(function (object) {
+      var objectUrl = bucketUrl + encodeURIComponent(object.Key);
+      if (object.Key != playlistKey && object.Key != metadataKey) {
+        trackUrls.push(objectUrl);
+      }
+    });
+
+    let tracks = trackUrls.map((url, i) => {
+      return {
+        src: url,
+        title: metadata.tracklist[i],
+      };
+    });
+
+    console.log(metadata);
+    console.log(tracks);
+
+    return tracks;
+  } catch (err) {
+    console.error(err);
+  }
+};
 
 class ScPlayer extends React.Component {
   constructor(props) {
@@ -74,7 +119,7 @@ class ScPlayer extends React.Component {
     this.state = {
       player: null,
       trackIndex: 0,
-      playlist: PLAYLIST,
+      playlist: null,
       nowPlaying: false,
       playbackStarted: false,
     };
@@ -132,11 +177,14 @@ class ScPlayer extends React.Component {
     }));
   };
 
-  playerInfo = (title, index) => {
-    const { playbackStarted } = this.state;
+  playerInfo = () => {
+    const { playbackStarted, trackIndex, playlist } = this.state;
 
-    if (playbackStarted) {
-      return title + ` ::: [${index + 1} of 10]`;
+    if (playbackStarted && playlist) {
+      return (
+        playlist[trackIndex].title +
+        ` ::: [${trackIndex + 1} of ${playlist.length}]`
+      );
     } else {
       return "Gi Gi - OST Circadia";
     }
@@ -209,6 +257,14 @@ class ScPlayer extends React.Component {
       : buttonName;
   };
 
+  async componentDidMount() {
+    let playlist = await s3PlaylistTracks(this.props.playlistDir);
+
+    this.setState({
+      playlist: playlist,
+    });
+  }
+
   render() {
     const { trackIndex, playlist } = this.state;
 
@@ -225,9 +281,7 @@ class ScPlayer extends React.Component {
             ⟩⟩
           </div>
         </PlayControls>
-        <p className="playerInfo">
-          {this.playerInfo(playlist[trackIndex].title, trackIndex)}
-        </p>
+        <p className="playerInfo">{this.playerInfo()}</p>
       </Player>
     );
   }

@@ -130,7 +130,10 @@ class CircadiaApp extends React.Component {
           source={this.getImageUrl()}
         />
         <PlayerContainer>
-          <ScPlayer onStateChange={this.playerStateChange} />
+          <ScPlayer
+            onStateChange={this.playerStateChange}
+            playlistDir={"wip-005"}
+          />
         </PlayerContainer>
       </PageContainer>
     );
