@@ -1,13 +1,13 @@
-import React from 'react'
-import styled from 'styled-components'
-import SoundCloudAudio from 'soundcloud-audio'
-
+import React from "react";
+import styled from "styled-components";
+import { Howl } from "howler";
+import AWS from "aws-sdk";
+import YAML from "yaml";
 
 const Player = styled.div`
-
   height: 100%;
 
-  background: rgba(255,255,255,0.85);
+  background: rgba(255, 255, 255, 0.85);
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -16,6 +16,7 @@ const Player = styled.div`
 
   .playerInfo {
     font-size: 1.3em;
+    cursor: default;
   }
 
   @media screen and (max-width: 500px) {
@@ -28,11 +29,12 @@ const Player = styled.div`
       padding-bottom: 0.3em;
     }
   }
-
-`
+`;
 
 const PlayControls = styled.div`
-  .playPause, .next, .prev {
+  .playPause,
+  .next,
+  .prev {
     font-size: 15pt;
     cursor: pointer;
     width: 100%;
@@ -40,8 +42,7 @@ const PlayControls = styled.div`
   }
 
   .hidden {
-    color: #999;
-    pointer-events: none;
+    color: #999 !important;
   }
 
   width: 100px;
@@ -54,143 +55,222 @@ const PlayControls = styled.div`
   @media screen and (max-width: 500px) {
     padding-bottom: 1em;
   }
+`;
 
+const s3PlaylistTracks = async (playlistDir) => {
+  const bucketName = "wip-static";
+  // Initialize the Amazon Cognito credentials provider
+  AWS.config.region = "us-east-1"; // Region
+  AWS.config.credentials = new AWS.CognitoIdentityCredentials({
+    IdentityPoolId: process.env.GATSBY_AWS_POOL_ID,
+  });
 
-`
+  // Create a new service object
+  let s3 = new AWS.S3({
+    apiVersion: "2006-03-01",
+    params: { Bucket: bucketName },
+  });
+
+  var playlistKey = "stream/" + encodeURIComponent(playlistDir) + "/";
+
+  console.log("Listing items for: " + playlistKey);
+  try {
+    let s3Objects = await s3
+      .listObjectsV2({ Delimiter: "/", Prefix: playlistKey })
+      .promise();
+
+    let bucketUrl = `https://${bucketName}.s3.amazonaws.com/`;
+
+    let metadataKey = playlistKey + "metadata.yml";
+    let response = await fetch(bucketUrl + metadataKey);
+    let metadataRaw = await response.text();
+
+    console.log(metadataRaw);
+    let metadata = YAML.parse(metadataRaw);
+
+    let trackUrls = [];
+    s3Objects.Contents.forEach(function (object) {
+      var objectUrl = bucketUrl + encodeURIComponent(object.Key);
+      if (object.Key != playlistKey && object.Key != metadataKey) {
+        trackUrls.push(objectUrl);
+      }
+    });
+
+    let tracks = trackUrls.map((url, i) => {
+      return {
+        src: url,
+        title: metadata.tracklist[i],
+      };
+    });
+
+    console.log(metadata);
+    console.log(tracks);
+
+    return tracks;
+  } catch (err) {
+    console.error(err);
+  }
+};
 
 class ScPlayer extends React.Component {
-
-
   constructor(props) {
-    super(props)
+    super(props);
 
     this.state = {
       player: null,
-      tracks: null,
+      trackIndex: 0,
+      playlist: null,
       nowPlaying: false,
       playbackStarted: false,
-    }
+    };
   }
 
-  componentDidMount() {
-    if (typeof document !== `undefined`) {
-      let player = new SoundCloudAudio('1796bdbd7f77b6ccf8654cf6fa432669')
+  play = (index) => {
+    const { playlist } = this.state;
 
-      player.on('play', () => { 
-        this.setState({
-          nowPlaying: true
-        })
-        this.props.onStateChange(player)
-      })
-      player.on('pause', () => {
-        this.setState({
-          nowPlaying: false
-        })
-        this.props.onStateChange(player)
-      })
-      player.on('ended', () => { this.nextTrack() })
+    let sound;
 
-      player.resolve("https://soundcloud.com/keptmale/sets/ost-circadia/s-TIzMQ", (playlist) => {
+    if (playlist[index].howl) {
+      sound = playlist[index].howl;
+    } else {
+      sound = new Howl({
+        src: [this.state.playlist[index].src],
+      });
+
+      sound.on("play", () => {
         this.setState({
-          player: player,
-          trackTitle: playlist.title,
-          tracks: playlist.tracks
-        })
-      })
+          nowPlaying: true,
+        });
+        this.props.onStateChange({ paused: false, trackIndex: index });
+      });
+
+      sound.on("pause", () => {
+        this.setState({
+          nowPlaying: false,
+        });
+        this.props.onStateChange({ paused: true, trackIndex: index });
+      });
+
+      sound.on("stop", () => {
+        this.setState({ nowPlaying: false });
+        this.props.onStateChange({ paused: true, trackIndex: index });
+      });
+
+      sound.on("end", () => {
+        this.nextTrack();
+      });
+
+      // Update playlist
+      const newPlaylist = [...playlist];
+      newPlaylist[index] = { ...playlist[index], howl: sound };
+
+      this.setState({
+        playlist: newPlaylist,
+      });
     }
-  }
+
+    sound.play();
+
+    this.setState(() => ({
+      trackIndex: index,
+      playbackStarted: true,
+    }));
+  };
 
   playerInfo = () => {
-    if (this.state.playbackStarted) {
-      let playlistIndex = this.state.player._playlistIndex
+    const { playbackStarted, trackIndex, playlist } = this.state;
+
+    if (playbackStarted && playlist) {
       return (
-        this.state.tracks[playlistIndex].title + ` ::: [${playlistIndex+1} of 10]`
-      )
+        playlist[trackIndex].title +
+        ` ::: [${trackIndex + 1} of ${playlist.length}]`
+      );
     } else {
-      return "Gi Gi - OST Circadia"
+      return "Gi Gi - OST Circadia";
     }
-  }
+  };
 
   togglePlayback = () => {
-    if (this.state.nowPlaying) {
-      this.state.player.pause()
-        this.setState({
-          nowPlaying: false
-        })
+    const { playlist, trackIndex } = this.state;
+
+    const sound = playlist[trackIndex].howl;
+
+    if (sound?.playing()) {
+      sound.pause();
     } else {
-      this.setState({
-        nowPlaying: true,
-        playbackStarted: true
-      })
-      this.state.player.play()
+      this.play(trackIndex);
     }
-  }
+  };
+
+  stop = () => {
+    const { playlist, trackIndex } = this.state;
+
+    const sound = playlist[trackIndex].howl;
+    if (sound) {
+      sound.stop();
+    }
+  };
+
+  skipTo = (index) => {
+    this.stop();
+    this.play(index);
+  };
 
   nextTrack = () => {
-    if (this.state.player._playlistIndex === this.state.player._playlist.tracks.length - 1) {
-      this.resetPlayback()
-    } else if (!this.state.nowPlaying) {
-      this.setState(prevState => {
-        prevState.player._playlistIndex += 1
-        return {player: prevState.player}
-      })
+    const { playlist, trackIndex, playbackStarted } = this.state;
+
+    if (!playbackStarted) return;
+
+    if (trackIndex === playlist.length - 1) {
+      this.resetPlayback();
     } else {
-      this.state.player.next().then(() => {
-        this.setState({player: this.state.player})
-      })
+      const index = trackIndex + 1;
+      this.skipTo(index);
     }
-  }
+  };
 
   prevTrack = () => {
-    if (this.state.player.audio.paused) {
-      this.setState(prevState => {
-        prevState.player._playlistIndex -= 1
-        return {player: prevState.player}
-      })
-    } else {
-      this.state.player.previous().then(() => {
-        this.setState({player: this.state.player})
-      })
+    if (this.state.trackIndex > 0) {
+      const index = this.state.trackIndex - 1;
+      this.skipTo(index);
     }
-  }
+  };
 
   resetPlayback = () => {
-    this.setState(prevState => {
-      prevState.player._playlistIndex = 0
-      prevState.player.stop()
-      return {
-        player: prevState.player,
-        nowPlaying: false,
-        playbackStarted: false
-      }
-    })
-  }
+    this.stop();
+
+    this.setState({
+      trackIndex: 0,
+      nowPlaying: false,
+      playbackStarted: false,
+    });
+  };
 
   // ADD EVENT HANLDER SO IF PLAYBACK STOPS,
   // WE RESET THE "PLAY/PAUSE" BUTTON
 
-  getPlaylistIndex = () => {
-    if (this.state.player) {
-      return this.state.player._playlistIndex
-    } else {
-      return 0
-    }
-  }
-
   getClassNames = (buttonName) => {
-    if (!this.state.playbackStarted) {
-      return buttonName + " hidden"
-    } else if (this.getPlaylistIndex() === 0 && buttonName === "prev") {
-      return buttonName + " hidden"
-    } else {
-      return buttonName
-    }
+    const { playbackStarted, trackIndex } = this.state;
+
+    return !playbackStarted || (trackIndex === 0 && buttonName === "prev")
+      ? buttonName + " hidden"
+      : buttonName;
+  };
+
+  async componentDidMount() {
+    let playlist = await s3PlaylistTracks(this.props.playlistDir);
+
+    this.setState({
+      playlist: playlist,
+    });
   }
 
   render() {
+    const { trackIndex, playlist } = this.state;
+
     return (
       <Player>
-        <PlayControls playlistIndex={this.getPlaylistIndex()} playbackStarted={this.state.playbackStarted} >
+        <PlayControls>
           <div className={this.getClassNames("prev")} onClick={this.prevTrack}>
             ⟨⟨
           </div>
@@ -203,8 +283,8 @@ class ScPlayer extends React.Component {
         </PlayControls>
         <p className="playerInfo">{this.playerInfo()}</p>
       </Player>
-    )
+    );
   }
 }
 
-export default ScPlayer
+export default ScPlayer;

@@ -48,12 +48,7 @@ exports.onCreateWebpackConfig = ({ stage, loaders, actions }) => {
   if (stage === "build-html") {
     actions.setWebpackConfig({
       module: {
-        rules: [
-          {
-            test: /soundcloud-audio/,
-            use: loaders.null(),
-          },
-        ],
+        rules: [],
       },
     });
   }
