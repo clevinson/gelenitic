@@ -102,7 +102,7 @@ export const query = graphql`
         background_images {
           src {
             childImageSharp {
-              gatsbyImageData(layout: FULL_WIDTH)
+              gatsbyImageData(layout: FULL_WIDTH, placeholder: TRACED_SVG)
             }
           }
         }
