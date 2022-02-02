@@ -4,6 +4,7 @@ import { graphql } from "gatsby";
 import Layout from "../components/layout";
 import styled from "styled-components";
 import { SmallMediaQuery, SmallWidth } from "../global-variables";
+import { GatsbyImage, getImage } from "gatsby-plugin-image";
 
 const BackgroundImages = styled.div`
   width: 100%;
@@ -58,8 +59,10 @@ class PhysicalPage extends React.Component {
         <div className="container">
           <ReleaseTextBox hideContent={this.state.hideContent} data={release} />
           <BackgroundImages onClick={this.backgroundClick}>
-            {images.map((img_url, i) => {
-              return <img alt="" key={i} src={img_url} />;
+            {images.map((imageNode, i) => {
+              let image = getImage(imageNode.src);
+
+              return <GatsbyImage alt="" key={i} image={image} />;
             })}
           </BackgroundImages>
         </div>
@@ -89,7 +92,17 @@ export const query = graphql`
           a
           b
         }
-        background_images
+        background_images {
+          src {
+            childImageSharp {
+              gatsbyImageData(
+                placeholder: TRACED_SVG
+                layout: FULL_WIDTH
+                formats: [AUTO, WEBP, AVIF]
+              )
+            }
+          }
+        }
         purchase_link
         purchase_links {
           label
