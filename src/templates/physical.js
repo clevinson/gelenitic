@@ -62,7 +62,14 @@ class PhysicalPage extends React.Component {
             {images.map((imageNode, i) => {
               let image = getImage(imageNode.src);
 
-              return <GatsbyImage alt="" key={i} image={image} />;
+              return (
+                <GatsbyImage
+                  alt=""
+                  key={i}
+                  image={image}
+                  style={{ zIndex: -2 }}
+                />
+              );
             })}
           </BackgroundImages>
         </div>
@@ -95,11 +102,7 @@ export const query = graphql`
         background_images {
           src {
             childImageSharp {
-              gatsbyImageData(
-                placeholder: TRACED_SVG
-                layout: FULL_WIDTH
-                formats: [AUTO, WEBP, AVIF]
-              )
+              gatsbyImageData(layout: FULL_WIDTH)
             }
           }
         }
