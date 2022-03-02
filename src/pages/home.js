@@ -95,7 +95,7 @@ let isEven = (num) => {
   }
 };
 
-export default ({ data }) => {
+const Home = ({ data }) => {
   return (
     <Layout>
       <ReleaseList>
@@ -134,6 +134,8 @@ export default ({ data }) => {
     </Layout>
   );
 };
+
+export default Home;
 
 export const query = graphql`
   query {
