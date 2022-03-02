@@ -30,13 +30,11 @@ function Codas(props) {
     const image = draw.image("/assets/WIP006/teahouse.jpeg");
     image.viewbox(0, 0, 100, 100).size("100%", "100%");
 
-    // let blur;
-    let hueRotate;
+    let bw;
     image.filterWith((add) => {
-      // blur = add.gaussianBlur(0.5);
-      hueRotate = add.colorMatrix("hueRotate", 0);
+      bw = add.colorMatrix("saturate", 1);
     });
-    hueRotate.animate(1000000).loop(true, true).attr("values", 360);
+    bw.animate(10000).loop(true, true).attr("values", 0);
 
     return () => {
       draw.clear();
