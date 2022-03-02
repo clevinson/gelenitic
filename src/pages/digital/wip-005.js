@@ -133,6 +133,7 @@ class CircadiaApp extends React.Component {
           <ScPlayer
             onStateChange={this.playerStateChange}
             playlistDir={"wip-005"}
+            playlistName="Gi Gi - OST Circadia"
           />
         </PlayerContainer>
       </PageContainer>

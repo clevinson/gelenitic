@@ -73,7 +73,6 @@ const s3PlaylistTracks = async (playlistDir) => {
 
   var playlistKey = "stream/" + encodeURIComponent(playlistDir) + "/";
 
-  console.log("Listing items for: " + playlistKey);
   try {
     let s3Objects = await s3
       .listObjectsV2({ Delimiter: "/", Prefix: playlistKey })
@@ -85,13 +84,12 @@ const s3PlaylistTracks = async (playlistDir) => {
     let response = await fetch(bucketUrl + metadataKey);
     let metadataRaw = await response.text();
 
-    console.log(metadataRaw);
     let metadata = YAML.parse(metadataRaw);
 
     let trackUrls = [];
     s3Objects.Contents.forEach(function (object) {
       var objectUrl = bucketUrl + encodeURIComponent(object.Key);
-      if (object.Key != playlistKey && object.Key != metadataKey) {
+      if (object.Key !== playlistKey && object.Key !== metadataKey) {
         trackUrls.push(objectUrl);
       }
     });
@@ -102,9 +100,6 @@ const s3PlaylistTracks = async (playlistDir) => {
         title: metadata.tracklist[i],
       };
     });
-
-    console.log(metadata);
-    console.log(tracks);
 
     return tracks;
   } catch (err) {
@@ -186,7 +181,7 @@ class ScPlayer extends React.Component {
         ` ::: [${trackIndex + 1} of ${playlist.length}]`
       );
     } else {
-      return "Gi Gi - OST Circadia";
+      return this.props.playlistName;
     }
   };
 
